@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Temp Email & Verification Portal</title>
+  <title>Temp Email Portal</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 20px; }
     .container { max-width: 600px; margin: 40px auto; background: #1e293b; padding: 24px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
@@ -17,13 +17,13 @@
     .otp-badge { display: inline-block; background: #22c55e; color: #000; font-weight: bold; font-size: 1.2rem; padding: 4px 12px; border-radius: 4px; margin-top: 8px; }
     .sender { font-size: 0.85rem; color: #94a3b8; }
     .subject { font-weight: bold; margin: 4px 0; color: #f1f5f9; }
-    .body { font-size: 0.9rem; color: #cbd5e1; white-space: pre-wrap; }
+    .body { font-size: 0.9rem; color: #cbd5e1; white-space: pre-wrap; margin-top: 8px; }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>Temp Email Verification Portal</h1>
+  <h1>Temp Email Portal</h1>
   
   <div class="email-box">
     <input type="text" id="tempEmail" class="email-input" value="Click Generate" readonly>
@@ -31,51 +31,74 @@
   </div>
 
   <div id="inbox" class="inbox-list">
-    <p style="text-align: center; color: #64748b;">No emails received yet. Listening for incoming messages...</p>
+    <p style="text-align: center; color: #64748b;">Click "Generate Email" to create a live inbox...</p>
   </div>
 </div>
 
 <script>
-  const BACKEND_URL = "https://dg-github-io-u8dh.onrender.com";
-  let currentEmail = "";
+  let currentLogin = "";
+  let currentDomain = "";
 
   async function generateNewEmail() {
     try {
-      const res = await fetch(`${BACKEND_URL}/api/generate-email`);
-      const data = await res.json();
-      currentEmail = data.email;
-      document.getElementById("tempEmail").value = currentEmail;
-      document.getElementById("inbox").innerHTML = '<p style="text-align: center; color: #64748b;">Inbox active. Send an email to test...</p>';
+      // Fetch available active domains from 1secmail API
+      const domainRes = await fetch("https://www.1secmail.com/api/v1/?action=getDomainList");
+      const domains = await domainRes.json();
+      
+      currentDomain = domains[0];
+      currentLogin = Math.random().toString(36).substring(2, 10);
+      
+      const fullEmail = `${currentLogin}@${currentDomain}`;
+      document.getElementById("tempEmail").value = fullEmail;
+      document.getElementById("inbox").innerHTML = '<p style="text-align: center; color: #64748b;">Inbox active. Listening for incoming emails...</p>';
     } catch (err) {
       console.error("Error generating email:", err);
+      alert("Failed to connect to email service. Try again.");
     }
   }
 
-  async function pollInbox() {
-    if (!currentEmail) return;
+  async function checkInbox() {
+    if (!currentLogin || !currentDomain) return;
 
     try {
-      const res = await fetch(`${BACKEND_URL}/api/inbox?email=${encodeURIComponent(currentEmail)}`);
-      const data = await res.json();
+      const res = await fetch(`https://www.1secmail.com/api/v1/?action=getMessages&login=${currentLogin}&domain=${currentDomain}`);
+      const messages = await res.json();
       
       const inboxContainer = document.getElementById("inbox");
-      if (data.emails && data.emails.length > 0) {
-        inboxContainer.innerHTML = data.emails.map(email => `
-          <div class="email-card">
-            <div class="sender">From: ${email.sender}</div>
-            <div class="subject">${email.subject}</div>
-            <div class="body">${email.body}</div>
-            ${email.otp ? `<div><span class="otp-badge">OTP: ${email.otp}</span></div>` : ''}
-          </div>
-        `).join('');
+
+      if (messages.length === 0) {
+        return;
       }
+
+      let inboxHtml = "";
+
+      for (let msg of messages) {
+        // Fetch full message content
+        const msgDetailRes = await fetch(`https://www.1secmail.com/api/v1/?action=readMessage&login=${currentLogin}&domain=${currentDomain}&id=${msg.id}`);
+        const msgDetail = await msgDetailRes.json();
+
+        // Extract 6-digit OTP code if present
+        const otpMatch = msgDetail.textBody ? msgDetail.textBody.match(/\b\d{6}\b/) : null;
+        const extractedOtp = otpMatch ? otpMatch[0] : null;
+
+        inboxHtml += `
+          <div class="email-card">
+            <div class="sender">From: ${msgDetail.from}</div>
+            <div class="subject">${msgDetail.subject}</div>
+            <div class="body">${msgDetail.textBody}</div>
+            ${extractedOtp ? `<div><span class="otp-badge">OTP: ${extractedOtp}</span></div>` : ''}
+          </div>
+        `;
+      }
+
+      inboxContainer.innerHTML = inboxHtml;
     } catch (err) {
-      console.error("Error polling inbox:", err);
+      console.error("Error checking inbox:", err);
     }
   }
 
-  // Poll for new incoming emails every 3 seconds
-  setInterval(pollInbox, 3000);
+  // Poll inbox every 4 seconds
+  setInterval(checkInbox, 4000);
 </script>
 
 </body>
