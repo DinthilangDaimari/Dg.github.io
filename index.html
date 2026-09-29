@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Rock Dodge</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #0d1b2a; overflow: hidden; touch-action: none; }
+  canvas { display: block; margin: 0 auto; background: #12263a; max-width: 100%; max-height: 100%; }
+</style>
+</head>
+<body>
+<canvas id="c" width="400" height="600"></canvas>
+<script>
+const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+const W = cv.width, H = cv.height;
+let player, rocks, coins, score, best = 0, over, frame, keys = {};
+
+function reset() {
+  player = { x: W / 2, y: H - 60, r: 16 };
+  rocks = []; coins = []; score = 0; over = false; frame = 0;
+}
+reset();
+
+addEventListener('keydown', e => { keys[e.key] = true; if (over && e.key === ' ') reset(); });
+addEventListener('keyup', e => keys[e.key] = false);
+
+function pointer(e) {
+  const rect = cv.getBoundingClientRect();
+  const t = e.touches ? e.touches[0] : e;
+  player.x = (t.clientX - rect.left) * (W / rect.width);
+  if (over && e.type !== 'pointermove' && e.type !== 'touchmove') reset();
+}
+cv.addEventListener('pointerdown', pointer);
+cv.addEventListener('pointermove', e => { if (e.buttons || e.pointerType === 'touch') pointer(e); });
+
+function update() {
+  if (over) return;
+  frame++;
+  if (keys.ArrowLeft || keys.a) player.x -= 6;
+  if (keys.ArrowRight || keys.d) player.x += 6;
+  player.x = Math.max(player.r, Math.min(W - player.r, player.x));
+
+  const speed = 3 + score / 150;
+  if (frame % Math.max(14, 40 - Math.floor(score / 40)) === 0)
+    rocks.push({ x: Math.random() * W, y: -20, r: 12 + Math.random() * 16, s: speed + Math.random() * 2 });
+  if (frame % 90 === 0)
+    coins.push({ x: 20 + Math.random() * (W - 40), y: -10, r: 9 });
+
+  for (const r of rocks) {
+    r.y += r.s;
+    if (Math.hypot(r.x - player.x, r.y - player.y) < r.r + player.r - 4) {
+      over = true; best = Math.max(best, score);
+    }
+  }
+  for (const c of coins) {
+    c.y += 3;
+    if (Math.hypot(c.x - player.x, c.y - player.y) < c.r + player.r) { score += 25; c.dead = true; }
+  }
+  rocks = rocks.filter(r => r.y < H + 40);
+  coins = coins.filter(c => c.y < H + 20 && !c.dead);
+  if (frame % 6 === 0) score++;
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#9fb3c8';
+  for (const r of rocks) { ctx.beginPath(); ctx.arc(r.x, r.y, r.r, 0, 7); ctx.fill(); }
+  ctx.fillStyle = '#ffd166';
+  for (const c of coins) { ctx.beginPath(); ctx.arc(c.x, c.y, c.r, 0, 7); ctx.fill(); }
+  ctx.fillStyle = '#3ddc97';
+  ctx.beginPath();
+  ctx.moveTo(player.x, player.y - player.r);
+  ctx.lineTo(player.x + player.r, player.y + player.r);
+  ctx.lineTo(player.x - player.r, player.y + player.r);
+  ctx.fill();
+  ctx.fillStyle = '#fff'; ctx.font = '20px system-ui, sans-serif'; ctx.textAlign = 'left';
+  ctx.fillText('Score ' + score, 12, 28);
+  ctx.textAlign = 'right'; ctx.fillText('Best ' + best, W - 12, 28);
+  if (over) {
+    ctx.textAlign = 'center'; ctx.font = '32px system-ui, sans-serif';
+    ctx.fillText('Crashed!', W / 2, H / 2 - 10);
+    ctx.font = '18px system-ui, sans-serif';
+    ctx.fillText('Tap or press Space to play again', W / 2, H / 2 + 24);
+  }
+}
+
+(function loop() { update(); draw(); requestAnimationFrame(loop); })();
+</script>
+</body>
+</html>
