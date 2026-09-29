@@ -2,56 +2,65 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
-
-// Enable CORS for all domains and regions
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-let latestSms = null;
+// In-memory store for generated temporary inboxes and received emails
+let inboxes = {};
 
-// Health check with IST time support
-app.get('/', (req, res) => {
-  const istTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
-  res.status(200).json({
-    status: 'online',
-    region: 'India / Global',
-    ist_time: istTime
-  });
+// Helper: Generate a random temporary email address
+function generateRandomEmail() {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let prefix = '';
+  for (let i = 0; i < 8; i++) {
+    prefix += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return `${prefix}@mail-gateway.net`; // Public placeholder domain
+}
+
+// Endpoint 1: Generate a new temp email
+app.get('/api/generate-email', (req, res) => {
+  const newEmail = generateRandomEmail();
+  inboxes[newEmail] = [];
+  res.json({ email: newEmail });
 });
 
-// Webhook endpoint supporting Indian & international payloads
-app.post('/webhook/incoming-sms', (req, res) => {
-  const sender = req.body.From || req.body.sender || req.body.from || req.body.mobile || 'Service';
-  const text = req.body.Body || req.body.text || req.body.message || req.body.sms || '';
-  
-  // Extract 4-8 digit OTP codes (standard for Indian banks, IG, WhatsApp, etc.)
-  const extractedCode = text.match(/\b\d{4,8}\b/)?.[0] || '123456';
-  const istTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+// Endpoint 2: Incoming Webhook for emails (e.g., from SendGrid, Mailgun, or Cloudflare Email Routing)
+app.post('/webhook/incoming-email', (req, res) => {
+  const { recipient, sender, subject, body } = req.body;
 
-  latestSms = {
-    from: sender,
-    body: text,
-    code: extractedCode,
-    timestamp_ist: istTime,
-    country: sender.startsWith('+91') || sender.startsWith('91') ? 'India' : 'International'
-  };
+  if (recipient && inboxes[recipient]) {
+    // Extract potential 6-digit OTP codes from email body
+    const otpMatch = body ? body.match(/\b\d{6}\b/) : null;
+    const extractedOtp = otpMatch ? otpMatch[0] : null;
 
-  res.status(200).json({ success: true, received: latestSms });
+    const emailData = {
+      id: Date.now(),
+      sender: sender || 'Unknown Sender',
+      subject: subject || 'No Subject',
+      body: body || '',
+      otp: extractedOtp,
+      timestamp: new Date().toISOString()
+    };
+
+    inboxes[recipient].unshift(emailData);
+    return res.status(200).json({ status: 'success', message: 'Email stored' });
+  }
+
+  res.status(400).json({ status: 'error', message: 'Inbox not found' });
 });
 
-// API endpoint fetched by index.html
-app.get('/api/get-latest-sms', (req, res) => {
-  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-  res.json(latestSms || { status: 'waiting', message: 'No SMS received yet' });
+// Endpoint 3: Fetch emails for a specific address
+app.get('/api/inbox', (req, res) => {
+  const { email } = req.query;
+  if (!email || !inboxes[email]) {
+    return res.json({ emails: [] });
+  }
+  res.json({ emails: inboxes[email] });
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT} with India + Global webhook support`);
+app.listen(PORT, () => {
+  console.log(`Temp Email Backend listening on port ${PORT}`);
 });
