@@ -1,0 +1,13 @@
+name: Build and Run Game
+
+on: [push, workflow_dispatch]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile
+        run: g++ main.cpp -o game
+      - name: Run (auto-play with sample guesses)
+        run: echo "50 25 75 12 37 62 87 6 18 31 43 56 68" | ./game
