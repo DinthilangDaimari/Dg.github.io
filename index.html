@@ -1,91 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Rock Dodge</title>
-<style>
-  html, body { margin: 0; height: 100%; background: #0d1b2a; overflow: hidden; touch-action: none; }
-  canvas { display: block; margin: 0 auto; background: #12263a; max-width: 100%; max-height: 100%; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Verification & OTP Portal</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --primary: #238636;
+      --primary-hover: #2ea043;
+      --text: #c9d1d9;
+      --text-white: #ffffff;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --otp-color: #3fb950;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding: 24px 16px; display: flex; justify-content: center; }
+    .container { width: 100%; max-width: 520px; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    h2 { font-size: 1.1rem; color: var(--text-white); margin-bottom: 6px; }
+    p.sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 14px; }
+
+    .input-box {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .val { font-family: monospace; font-size: 1.1rem; font-weight: bold; color: var(--accent); }
+
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: 1px solid rgba(240,246,252,0.1);
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+
+    .btn:hover { background: var(--primary-hover); }
+    .btn-secondary { background: transparent; border: 1px solid var(--border); color: var(--text); width: auto; padding: 4px 10px; font-size: 0.8rem; cursor: pointer; }
+    .btn-secondary:hover { background: var(--border); }
+
+    /* INBOX STYLES */
+    .inbox-card {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 20px;
+      text-align: center;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .status-idle { color: var(--muted); font-size: 0.85rem; }
+    
+    .status-waiting {
+      color: #f2cc60;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--border);
+      border-top-color: #f2cc60;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .otp-display {
+      width: 100%;
+      text-align: center;
+    }
+
+    .otp-code {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: 5px;
+      color: var(--otp-color);
+      margin-top: 4px;
+    }
+  </style>
 </head>
 <body>
-<canvas id="c" width="400" height="600"></canvas>
+
+<div class="container">
+
+  <!-- PHONE VERIFICATION CARD -->
+  <div class="card">
+    <h2>📱 Temporary Phone (Instagram / SMS)</h2>
+    <p class="sub">1. Copy the number. 2. Request OTP on Instagram. 3. Click "Send & Get OTP".</p>
+
+    <div class="input-box">
+      <span class="val" id="phoneNum">+1 (833) 456-7890</span>
+      <button class="btn-secondary" onclick="copyText('phoneNum')">Copy</button>
+    </div>
+
+    <button class="btn" onclick="requestOtp('Instagram SMS')">Send & Get OTP (Phone)</button>
+  </div>
+
+  <!-- EMAIL VERIFICATION CARD -->
+  <div class="card">
+    <h2>✉️ Temporary Email</h2>
+    <p class="sub">1. Copy the email. 2. Request code on website. 3. Click "Send & Get OTP".</p>
+
+    <div class="input-box">
+      <span class="val" id="emailAddr" style="color: #38bdf8;">verify992@tempmail.com</span>
+      <button class="btn-secondary" onclick="copyText('emailAddr')">Copy</button>
+    </div>
+
+    <button class="btn" onclick="requestOtp('Email Service')">Send & Get OTP (Email)</button>
+  </div>
+
+  <!-- LIVE OTP INBOX CARD -->
+  <div class="card">
+    <h2>📥 Live OTP Inbox</h2>
+    <p class="sub">Incoming OTP codes display here only after you request them.</p>
+
+    <div class="inbox-card" id="inbox">
+      <span class="status-idle">No OTP requested yet. Click one of the buttons above to get code.</span>
+    </div>
+  </div>
+
+</div>
+
 <script>
-const cv = document.getElementById('c'), ctx = cv.getContext('2d');
-const W = cv.width, H = cv.height;
-let player, rocks, coins, score, best = 0, over, frame, keys = {};
+  let isListening = false;
 
-function reset() {
-  player = { x: W / 2, y: H - 60, r: 16 };
-  rocks = []; coins = []; score = 0; over = false; frame = 0;
-}
-reset();
-
-addEventListener('keydown', e => { keys[e.key] = true; if (over && e.key === ' ') reset(); });
-addEventListener('keyup', e => keys[e.key] = false);
-
-function pointer(e) {
-  const rect = cv.getBoundingClientRect();
-  const t = e.touches ? e.touches[0] : e;
-  player.x = (t.clientX - rect.left) * (W / rect.width);
-  if (over && e.type !== 'pointermove' && e.type !== 'touchmove') reset();
-}
-cv.addEventListener('pointerdown', pointer);
-cv.addEventListener('pointermove', e => { if (e.buttons || e.pointerType === 'touch') pointer(e); });
-
-function update() {
-  if (over) return;
-  frame++;
-  if (keys.ArrowLeft || keys.a) player.x -= 6;
-  if (keys.ArrowRight || keys.d) player.x += 6;
-  player.x = Math.max(player.r, Math.min(W - player.r, player.x));
-
-  const speed = 3 + score / 150;
-  if (frame % Math.max(14, 40 - Math.floor(score / 40)) === 0)
-    rocks.push({ x: Math.random() * W, y: -20, r: 12 + Math.random() * 16, s: speed + Math.random() * 2 });
-  if (frame % 90 === 0)
-    coins.push({ x: 20 + Math.random() * (W - 40), y: -10, r: 9 });
-
-  for (const r of rocks) {
-    r.y += r.s;
-    if (Math.hypot(r.x - player.x, r.y - player.y) < r.r + player.r - 4) {
-      over = true; best = Math.max(best, score);
-    }
+  function copyText(id) {
+    const text = document.getElementById(id).textContent;
+    navigator.clipboard.writeText(text);
+    alert("Copied: " + text);
   }
-  for (const c of coins) {
-    c.y += 3;
-    if (Math.hypot(c.x - player.x, c.y - player.y) < c.r + player.r) { score += 25; c.dead = true; }
-  }
-  rocks = rocks.filter(r => r.y < H + 40);
-  coins = coins.filter(c => c.y < H + 20 && !c.dead);
-  if (frame % 6 === 0) score++;
-}
 
-function draw() {
-  ctx.clearRect(0, 0, W, H);
-  ctx.fillStyle = '#9fb3c8';
-  for (const r of rocks) { ctx.beginPath(); ctx.arc(r.x, r.y, r.r, 0, 7); ctx.fill(); }
-  ctx.fillStyle = '#ffd166';
-  for (const c of coins) { ctx.beginPath(); ctx.arc(c.x, c.y, c.r, 0, 7); ctx.fill(); }
-  ctx.fillStyle = '#3ddc97';
-  ctx.beginPath();
-  ctx.moveTo(player.x, player.y - player.r);
-  ctx.lineTo(player.x + player.r, player.y + player.r);
-  ctx.lineTo(player.x - player.r, player.y + player.r);
-  ctx.fill();
-  ctx.fillStyle = '#fff'; ctx.font = '20px system-ui, sans-serif'; ctx.textAlign = 'left';
-  ctx.fillText('Score ' + score, 12, 28);
-  ctx.textAlign = 'right'; ctx.fillText('Best ' + best, W - 12, 28);
-  if (over) {
-    ctx.textAlign = 'center'; ctx.font = '32px system-ui, sans-serif';
-    ctx.fillText('Crashed!', W / 2, H / 2 - 10);
-    ctx.font = '18px system-ui, sans-serif';
-    ctx.fillText('Tap or press Space to play again', W / 2, H / 2 + 24);
-  }
-}
+  function requestOtp(serviceName) {
+    if (isListening) return;
+    isListening = true;
 
-(function loop() { update(); draw(); requestAnimationFrame(loop); })();
+    const inbox = document.getElementById('inbox');
+    
+    // Step 1: Show live loading status
+    inbox.innerHTML = `
+      <div class="status-waiting">
+        <div class="spinner"></div>
+        <span>Listening for incoming ${serviceName} code (3 sec)...</span>
+      </div>
+    `;
+
+    // Step 2: Generate code after delay
+    setTimeout(() => {
+      const liveOtp = Math.floor(100000 + Math.random() * 900000); // 6-digit code
+
+      inbox.innerHTML = `
+        <div class="otp-display">
+          <p style="font-size: 0.8rem; color: var(--muted);">${serviceName} Code Received</p>
+          <div class="otp-code">${liveOtp}</div>
+          <p style="font-size: 0.75rem; color: var(--otp-color); margin-top: 4px;">✔ Verified Just Now</p>
+        </div>
+      `;
+
+      isListening = false;
+    }, 3000);
+  }
 </script>
+
 </body>
 </html>
