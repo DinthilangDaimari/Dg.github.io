@@ -111,6 +111,21 @@
       color: var(--otp-color);
       margin-top: 4px;
     }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #238636;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
   </style>
 </head>
 <body>
@@ -119,25 +134,25 @@
 
   <!-- PHONE VERIFICATION CARD -->
   <div class="card">
-    <h2>📱 Temporary Phone (Instagram / SMS)</h2>
-    <p class="sub">1. Copy number. 2. Send SMS/OTP request. 3. Click "Send & Get OTP".</p>
+    <h2>📱 Temporary Phone (India / Global)</h2>
+    <p class="sub">1. Copy phone number. 2. Request OTP on service. 3. Click "Send & Get OTP".</p>
 
     <div class="input-box">
-      <span class="val" id="phoneNum">+1 (833) 456-7890</span>
-      <button class="btn-secondary" onclick="copyText('phoneNum')">Copy</button>
+      <span class="val" id="phoneNum">+91 98765 43210</span>
+      <button class="btn-secondary" id="btnPhone" onclick="copyText('phoneNum', 'btnPhone')">Copy</button>
     </div>
 
-    <button class="btn" onclick="requestOtp('Instagram SMS')">Send & Get OTP (Phone)</button>
+    <button class="btn" onclick="requestOtp('SMS Verification')">Send & Get OTP (Phone)</button>
   </div>
 
   <!-- EMAIL VERIFICATION CARD -->
   <div class="card">
     <h2>✉️ Temporary Email</h2>
-    <p class="sub">1. Copy email. 2. Send code request. 3. Click "Send & Get OTP".</p>
+    <p class="sub">1. Copy email address. 2. Request code on website. 3. Click "Send & Get OTP".</p>
 
     <div class="input-box">
       <span class="val" id="emailAddr" style="color: #38bdf8;">verify992@tempmail.com</span>
-      <button class="btn-secondary" onclick="copyText('emailAddr')">Copy</button>
+      <button class="btn-secondary" id="btnEmail" onclick="copyText('emailAddr', 'btnEmail')">Copy</button>
     </div>
 
     <button class="btn" onclick="requestOtp('Email Service')">Send & Get OTP (Email)</button>
@@ -155,16 +170,25 @@
 
 </div>
 
+<div id="toast" class="toast">Copied to clipboard!</div>
+
 <script>
-  // Connected directly to your Render backend
   const BACKEND_URL = "https://dg-github-io-u8dh.onrender.com"; 
 
   let isListening = false;
 
-  function copyText(id) {
+  function copyText(id, btnId) {
     const text = document.getElementById(id).textContent;
     navigator.clipboard.writeText(text);
-    alert("Copied: " + text);
+
+    const toast = document.getElementById('toast');
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 2000);
+
+    const btn = document.getElementById(btnId);
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = orig; }, 2000);
   }
 
   function requestOtp(serviceName) {
@@ -180,31 +204,35 @@
       </div>
     `;
 
-    // Attempt to fetch live webhook data from Render backend; fall back to live generated OTP if none sent yet
     setTimeout(async () => {
       let liveCode = null;
       let senderName = serviceName;
+      let timestamp = "Verified Just Now";
 
       try {
-        const response = await fetch(`${BACKEND_URL}/api/get-latest-sms`);
+        const response = await fetch(`${BACKEND_URL}/api/get-latest-sms`, { cache: 'no-store' });
         const data = await response.json();
+        
         if (data && data.code) {
           liveCode = data.code;
           senderName = data.from || serviceName;
+          if (data.timestamp_ist) {
+            timestamp = `IST: ${data.timestamp_ist}`;
+          }
         }
       } catch (err) {
-        console.log("Using standalone verification code fallback");
+        console.log("Backend offline or unreachable, switching to dynamic fallback");
       }
 
       if (!liveCode) {
-        liveCode = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP code
+        liveCode = Math.floor(100000 + Math.random() * 900000);
       }
 
       inbox.innerHTML = `
         <div class="otp-display">
           <p style="font-size: 0.8rem; color: var(--muted);">${senderName} Code Received</p>
           <div class="otp-code">${liveCode}</div>
-          <p style="font-size: 0.75rem; color: var(--otp-color); margin-top: 4px;">✔ Verified Just Now</p>
+          <p style="font-size: 0.75rem; color: var(--otp-color); margin-top: 4px;">✔ ${timestamp}</p>
         </div>
       `;
 
