@@ -1,26 +1,31 @@
-# Setup Guide (Android + Termux)
+# J.A.R.V.I.S. AI Web Assistant
 
-This guide configures a physical Android phone running Termux as a local hardware SMS gateway to forward real carrier OTPs to your live Render backend and display them on your GitHub Pages dashboard.
+An interactive, voice-enabled AI assistant inspired by JARVIS, built with Next.js, FastAPI, and OpenAI.
 
----
+## 🚀 Features
+- **Voice-to-Text Command**: Built-in speech recognition interface.
+- **Realistic Voice Output**: Speech synthesis returning custom responses.
+- **Cyberpunk / Sci-Fi HUD**: Interactive orb visualizer and dark-themed UI.
 
-## Prerequisites
+## 🛠️ Setup Instructions
 
-1. An Android phone with an active SIM card capable of receiving SMS messages.
-2. **Termux** and **Termux:API** installed on the device (available on F-Droid).
-
----
-
-## Step 1: Update Packages & Request Storage Access
-
-Open **Termux** on your Android device and run:
-
+### 1. Backend (FastAPI)
 ```bash
-# Update package repositories
-pkg update -y
+cd backend
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+Copy `.env.example` to `.env` and insert your `OPENAI_API_KEY`:
+```bash
+python main.py
+```
+*Backend runs on `http://localhost:8000`*
 
-# Install required tools
-pkg install termux-api curl jq -y
-
-# Grant storage access
-termux-setup-storage
+### 2. Frontend (Next.js)
+```bash
+cd frontend
+npm install
+npm run dev
+```
+*Frontend runs on `http://localhost:3000`*
