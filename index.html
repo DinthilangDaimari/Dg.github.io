@@ -1,99 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Premium Event</title>
-  <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DINTHILANG PHOTO EDITOR</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap');
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', sans-serif; color: #111; background: #fafafa; line-height: 1.6; }
-    
-    header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 100px 20px;
-      text-align: center;
-    }
-    header h1 { font-size: 3rem; font-weight: 700; }
-    header p { font-size: 1.2rem; margin-top: 10px; opacity: 0.9; }
-    .btn {
-      display: inline-block;
-      margin-top: 30px;
-      padding: 14px 32px;
-      background: white;
-      color: #667eea;
-      border-radius: 50px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: 0.3s;
-    }
-    .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-
-    section { padding: 80px 20px; max-width: 1100px; margin: auto; }
-    h2 { font-size: 2.2rem; margin-bottom: 20px; text-align: center; }
-    
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px;
-      margin-top: 40px;
-    }
-    .card {
-      background: white;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0.08);
-      transition: 0.3s;
-    }
-    .card:hover { transform: translateY(-5px); }
-
-    footer {
-      background: #111;
-      color: #aaa;
-      text-align: center;
-      padding: 40px 20px;
-    }
-  </style>
+  body { background: #0a0a0a; color: #00ff41; font-family: 'Fira Code', monospace; padding: 20px; }
+  h1 { text-align: center; text-shadow: 0 0 10px #00ff41; margin-bottom: 20px; }
+ .container { max-width: 1100px; margin: auto; display: grid; grid-template-columns: 1fr 300px; gap: 20px; }
+  canvas { width: 100%; background: #111; border: 2px solid #00ff41; border-radius: 8px; }
+ .controls { background: #111; border: 1px solid #00ff41; padding: 20px; border-radius: 8px; }
+ .control-group { margin-bottom: 20px; }
+  label { display: block; margin-bottom: 8px; font-size: 0.9rem; }
+  input[type="range"] { width: 100%; accent-color: #00ff41; }
+  input[type="file"] { width: 100%; color: #00ff41; }
+ .btn {
+    width: 100%; padding: 12px; margin-top: 10px; background: transparent;
+    border: 1px solid #00ff41; color: #00ff41; cursor: pointer; font-family: inherit;
+  }
+ .btn:hover { background: #00ff41; color: #000; }
+ .filters { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+</style>
 </head>
 <body>
+<h1>> DINTHILANG PHOTO EDITOR v1.0</h1>
 
-  <header>
-    <h1>Your Premium Event</h1>
-    <p>Join us for an unforgettable experience</p>
-    <a href="#about" class="btn">Learn More</a>
-  </header>
+<div class="container">
+  <div>
+    <canvas id="canvas"></canvas>
+  </div>
 
-  <section id="about">
-    <h2>About The Event</h2>
-    <p style="text-align:center; max-width:700px; margin:auto;">
-      This is where you tell your story. Premium design, smooth animations, and responsive layout. 
-      Perfect for weddings, product launches, or corporate events.
-    </p>
+  <div class="controls">
+    <div class="control-group">
+      <label>> UPLOAD IMAGE</label>
+      <input type="file" id="upload" accept="image/*">
+    </div>
 
-    <div class="grid">
-      <div class="card">
-        <h3>📍 Venue</h3>
-        <p>Churachandpur Convention Center<br>Dec 15, 2026</p>
-      </div>
-      <div class="card">
-        <h3>🎉 Experience</h3>
-        <p>Live music, gourmet food, and networking with industry leaders.</p>
-      </div>
-      <div class="card">
-        <h3>🎟️ RSVP</h3>
-        <p>Limited seats available. Reserve your spot today.</p>
+    <div class="control-group">
+      <label>> BRIGHTNESS: <span id="bVal">100</span>%</label>
+      <input type="range" id="brightness" min="0" max="200" value="100">
+    </div>
+
+    <div class="control-group">
+      <label>> CONTRAST: <span id="cVal">100</span>%</label>
+      <input type="range" id="contrast" min="0" max="200" value="100">
+    </div>
+
+    <div class="control-group">
+      <label>> SATURATION: <span id="sVal">100</span>%</label>
+      <input type="range" id="saturation" min="0" max="200" value="100">
+    </div>
+
+    <div class="control-group">
+      <label>> BLUR: <span id="blVal">0</span>px</label>
+      <input type="range" id="blur" min="0" max="10" value="0">
+    </div>
+
+    <div class="control-group">
+      <label>> QUICK FILTERS</label>
+      <div class="filters">
+        <button class="btn" onclick="applyFilter('grayscale(100%)')">B&W</button>
+        <button class="btn" onclick="applyFilter('sepia(100%)')">SEPIA</button>
+        <button class="btn" onclick="applyFilter('invert(100%)')">INVERT</button>
+        <button class="btn" onclick="resetAll()">RESET</button>
       </div>
     </div>
-  </section>
 
-  <section style="background:white;">
-    <h2>Contact</h2>
-    <p style="text-align:center;">Email: hello@yourdomain.com | Phone: +91 XXXXX XXXXX</p>
-  </section>
+    <button class="btn" onclick="downloadImage()">[ DOWNLOAD IMAGE ]</button>
+  </div>
+</div>
 
-  <footer>
-    <p>© 2026 Your Premium Event. All rights reserved.</p>
-  </footer>
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let img = new Image();
 
+document.getElementById('upload').onchange = e => {
+  const file = e.target.files[0];
+  const reader = new FileReader();
+  reader.onload = () => {
+    img.src = reader.result;
+  }
+  reader.readAsDataURL(file);
+}
+
+img.onload = () => {
+  canvas.width = img.width;
+  canvas.height = img.height;
+  applyFilters();
+}
+
+function applyFilters() {
+  const b = document.getElementById('brightness').value;
+  const c = document.getElementById('contrast').value;
+  const s = document.getElementById('saturation').value;
+  const bl = document.getElementById('blur').value;
+
+  document.getElementById('bVal').innerText = b;
+  document.getElementById('cVal').innerText = c;
+  document.getElementById('sVal').innerText = s;
+  document.getElementById('blVal').innerText = bl;
+
+  ctx.filter = `brightness(${b}%) contrast(${c}%) saturate(${s}%) blur(${bl}px)`;
+  ctx.drawImage(img, 0, 0);
+}
+
+function applyFilter(filter) {
+  ctx.filter = filter;
+  ctx.drawImage(img, 0, 0);
+}
+
+function resetAll() {
+  document.getElementById('brightness').value = 100;
+  document.getElementById('contrast').value = 100;
+  document.getElementById('saturation').value = 100;
+  document.getElementById('blur').value = 0;
+  applyFilters();
+}
+
+function downloadImage() {
+  const link = document.createElement('a');
+  link.download = 'dinthilang-edited.png';
+  link.href = canvas.toDataURL();
+  link.click();
+}
+
+// Live updates
+['brightness','contrast','saturation','blur'].forEach(id => {
+  document.getElementById(id).oninput = applyFilters;
+})
+</script>
 </body>
 </html>
