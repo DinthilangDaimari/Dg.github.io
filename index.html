@@ -1,105 +1,291 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Temp Email Portal</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>J.A.R.V.I.S. Assistant</title>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 20px; }
-    .container { max-width: 600px; margin: 40px auto; background: #1e293b; padding: 24px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-    h1 { font-size: 1.5rem; text-align: center; margin-bottom: 20px; color: #38bdf8; }
-    .email-box { display: flex; gap: 10px; margin-bottom: 20px; }
-    .email-input { flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: #38bdf8; font-size: 1rem; text-align: center; font-weight: bold; }
-    .btn { padding: 12px 20px; border: none; border-radius: 6px; background: #0284c7; color: white; font-weight: bold; cursor: pointer; transition: background 0.2s; }
-    .btn:hover { background: #0369a1; }
-    .inbox-list { margin-top: 20px; }
-    .email-card { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
-    .otp-badge { display: inline-block; background: #22c55e; color: #000; font-weight: bold; font-size: 1.2rem; padding: 4px 12px; border-radius: 4px; margin-top: 8px; }
-    .sender { font-size: 0.85rem; color: #94a3b8; }
-    .subject { font-weight: bold; margin: 4px 0; color: #f1f5f9; }
-    .body { font-size: 0.9rem; color: #cbd5e1; white-space: pre-wrap; margin-top: 8px; }
+    @keyframes pulseGlow {
+      0% { transform: scale(1); box-shadow: 0 0 20px rgba(0, 243, 255, 0.4); }
+      50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(0, 243, 255, 0.9); }
+      100% { transform: scale(1); box-shadow: 0 0 20px rgba(0, 243, 255, 0.4); }
+    }
+
+    @keyframes spinSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #050b14;
+      color: #00f3ff;
+      font-family: 'Courier New', Courier, monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+    }
+
+    .header-status {
+      position: absolute;
+      top: 20px;
+      left: 30px;
+      letter-spacing: 2px;
+    }
+
+    .header-status h2 {
+      margin: 0;
+      color: #00f3ff;
+      font-size: 1.5rem;
+    }
+
+    .header-status small {
+      color: #0088aa;
+    }
+
+    .status-active {
+      color: #00ff88;
+    }
+
+    .status-listening {
+      color: #ff3366;
+    }
+
+    .orb-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 40px 0;
+    }
+
+    .outer-ring {
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      border: 2px dashed rgba(0, 243, 255, 0.4);
+      animation: spinSlow 12s linear infinite;
+      pointer-events: none;
+    }
+
+    .jarvis-orb {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 243, 255, 0.8) 0%, rgba(0, 50, 100, 0.2) 70%);
+      border: 2px solid #00f3ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      user-select: none;
+    }
+
+    .jarvis-orb.active {
+      animation: pulseGlow 1.5s infinite ease-in-out;
+    }
+
+    .orb-label {
+      font-weight: bold;
+      color: #000;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .hud-box {
+      max-width: 650px;
+      width: 90%;
+      background: rgba(0, 30, 60, 0.4);
+      border: 1px solid rgba(0, 243, 255, 0.3);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .hud-label {
+      color: #0088aa;
+      font-size: 12px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .hud-command {
+      margin: 0 0 15px 0;
+      color: #ffffff;
+    }
+
+    .hud-response {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.5;
+    }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <h1>Temp Email Portal</h1>
-  
-  <div class="email-box">
-    <input type="text" id="tempEmail" class="email-input" value="Click Generate" readonly>
-    <button class="btn" onclick="generateNewEmail()">Generate Email</button>
+  <!-- Top System Header -->
+  <div class="header-status">
+    <h2>J.A.R.V.I.S. SYSTEM</h2>
+    <small>STATUS: <span id="status-tag" class="status-active">ONLINE</span></small>
   </div>
 
-  <div id="inbox" class="inbox-list">
-    <p style="text-align: center; color: #64748b;">Click "Generate Email" to create a live inbox...</p>
+  <!-- Interactive Glowing Orb Visualizer -->
+  <div class="orb-container">
+    <div class="outer-ring"></div>
+    <div id="jarvis-orb" class="jarvis-orb" onclick="toggleListening()">
+      <span id="orb-text" class="orb-label">CLICK TO SPEAK</span>
+    </div>
   </div>
-</div>
 
-<script>
-  let currentLogin = "";
-  let currentDomain = "";
+  <!-- Command & Response Display HUD -->
+  <div class="hud-box">
+    <div id="command-container" style="display: none;">
+      <span class="hud-label">COMMAND:</span>
+      <p id="command-text" class="hud-command">""</p>
+    </div>
 
-  async function generateNewEmail() {
-    try {
-      // Fetch available active domains from 1secmail API
-      const domainRes = await fetch("https://www.1secmail.com/api/v1/?action=getDomainList");
-      const domains = await domainRes.json();
-      
-      currentDomain = domains[0];
-      currentLogin = Math.random().toString(36).substring(2, 10);
-      
-      const fullEmail = `${currentLogin}@${currentDomain}`;
-      document.getElementById("tempEmail").value = fullEmail;
-      document.getElementById("inbox").innerHTML = '<p style="text-align: center; color: #64748b;">Inbox active. Listening for incoming emails...</p>';
-    } catch (err) {
-      console.error("Error generating email:", err);
-      alert("Failed to connect to email service. Try again.");
+    <div>
+      <span class="hud-label">JARVIS:</span>
+      <p id="response-text" class="hud-response">JARVIS initialized. Standing by for command, Sir.</p>
+    </div>
+  </div>
+
+  <script>
+    // ⚠️ REPLACE THIS WITH YOUR LIVE BACKEND URL (Render/Railway/Heroku)
+    const BACKEND_API_URL = "https://your-jarvis-backend.onrender.com/api/chat";
+
+    let isListening = false;
+    let recognition = null;
+
+    // Initialize Web Speech API
+    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+
+      recognition.onstart = () => {
+        isListening = true;
+        updateUI('LISTENING...', 'LISTENING', true);
+      };
+
+      recognition.onresult = async (event) => {
+        const text = event.results[0][0].transcript;
+        document.getElementById('command-container').style.display = 'block';
+        document.getElementById('command-text').innerText = `"${text}"`;
+
+        updateUI('PROCESSING...', 'THINKING', true);
+        await sendToBackend(text);
+      };
+
+      recognition.onerror = (err) => {
+        console.error("Speech Recognition Error:", err);
+        isListening = false;
+        updateUI('ONLINE', 'CLICK TO SPEAK', false);
+      };
+
+      recognition.onend = () => {
+        isListening = false;
+        if (document.getElementById('status-tag').innerText === 'LISTENING...') {
+          updateUI('ONLINE', 'CLICK TO SPEAK', false);
+        }
+      };
+    } else {
+      document.getElementById('response-text').innerText = "Speech Recognition is not supported on this browser. Use Google Chrome or Edge.";
     }
-  }
 
-  async function checkInbox() {
-    if (!currentLogin || !currentDomain) return;
+    function toggleListening() {
+      if (!recognition) return;
 
-    try {
-      const res = await fetch(`https://www.1secmail.com/api/v1/?action=getMessages&login=${currentLogin}&domain=${currentDomain}`);
-      const messages = await res.json();
-      
-      const inboxContainer = document.getElementById("inbox");
-
-      if (messages.length === 0) {
-        return;
+      if (isListening) {
+        recognition.stop();
+      } else {
+        window.speechSynthesis.cancel(); // Interrupt speech if currently speaking
+        recognition.start();
       }
-
-      let inboxHtml = "";
-
-      for (let msg of messages) {
-        // Fetch full message content
-        const msgDetailRes = await fetch(`https://www.1secmail.com/api/v1/?action=readMessage&login=${currentLogin}&domain=${currentDomain}&id=${msg.id}`);
-        const msgDetail = await msgDetailRes.json();
-
-        // Extract 6-digit OTP code if present
-        const otpMatch = msgDetail.textBody ? msgDetail.textBody.match(/\b\d{6}\b/) : null;
-        const extractedOtp = otpMatch ? otpMatch[0] : null;
-
-        inboxHtml += `
-          <div class="email-card">
-            <div class="sender">From: ${msgDetail.from}</div>
-            <div class="subject">${msgDetail.subject}</div>
-            <div class="body">${msgDetail.textBody}</div>
-            ${extractedOtp ? `<div><span class="otp-badge">OTP: ${extractedOtp}</span></div>` : ''}
-          </div>
-        `;
-      }
-
-      inboxContainer.innerHTML = inboxHtml;
-    } catch (err) {
-      console.error("Error checking inbox:", err);
     }
-  }
 
-  // Poll inbox every 4 seconds
-  setInterval(checkInbox, 4000);
-</script>
+    async function sendToBackend(userMessage) {
+      try {
+        const response = await fetch(BACKEND_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userMessage })
+        });
 
+        if (!response.ok) throw new Error("Backend server error");
+
+        const data = await response.json();
+        document.getElementById('response-text').innerText = data.response;
+        speakText(data.response);
+      } catch (err) {
+        console.error(err);
+        const errorMsg = "I am unable to reach backend services. Please ensure your backend is live, Sir.";
+        document.getElementById('response-text').innerText = errorMsg;
+        speakText(errorMsg);
+      }
+    }
+
+    function speakText(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.pitch = 0.95;
+        utterance.rate = 1.0;
+
+        const voices = window.speechSynthesis.getVoices();
+        const jarvisVoice = voices.find(
+          v => v.name.includes("David") || v.name.includes("Male") || v.name.includes("UK English Male")
+        );
+        if (jarvisVoice) utterance.voice = jarvisVoice;
+
+        utterance.onstart = () => {
+          updateUI('RESPONDING...', 'SPEAKING', true);
+        };
+
+        utterance.onend = () => {
+          updateUI('ONLINE', 'CLICK TO SPEAK', false);
+        };
+
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    function updateUI(statusText, orbText, isActive) {
+      const statusTag = document.getElementById('status-tag');
+      const orb = document.getElementById('jarvis-orb');
+      const orbLabel = document.getElementById('orb-text');
+
+      statusTag.innerText = statusText;
+      statusTag.className = statusText === 'LISTENING...' ? 'status-listening' : 'status-active';
+      orbLabel.innerText = orbText;
+
+      if (isActive) {
+        orb.classList.add('active');
+      } else {
+        orb.classList.remove('active');
+      }
+    }
+
+    // Pre-load synthesis voices for browser compatibility
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+      };
+    }
+  </script>
 </body>
 </html>
