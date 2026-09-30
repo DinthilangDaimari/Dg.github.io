@@ -3,60 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DINTHILANG PHOTO EDITOR</title>
+<title>DINTHILANG PHOTO EDITOR v1.2</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap');
     * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: #0a0a0a; color: #00ff41; font-family: 'Fira Code', monospace; padding: 20px; }
   h1 { text-align: center; text-shadow: 0 0 10px #00ff41; margin-bottom: 20px; }
  .container { max-width: 1100px; margin: auto; display: grid; grid-template-columns: 1fr 300px; gap: 20px; }
-  canvas { width: 100%; background: #111; border: 2px solid #00ff41; border-radius: 8px; }
+  @media(max-width:900px){.container{grid-template-columns:1fr;} }
+  canvas { width: 100%; max-width: 100%; height: auto; background: #111; border: 2px solid #00ff41; border-radius: 8px; }
  .controls { background: #111; border: 1px solid #00ff41; padding: 20px; border-radius: 8px; }
  .control-group { margin-bottom: 20px; }
   label { display: block; margin-bottom: 8px; font-size: 0.9rem; }
   input[type="range"] { width: 100%; accent-color: #00ff41; }
   input[type="file"] { width: 100%; color: #00ff41; }
- .btn {
-    width: 100%; padding: 12px; margin-top: 10px; background: transparent;
-    border: 1px solid #00ff41; color: #00ff41; cursor: pointer; font-family: inherit;
-  }
+ .btn { width: 100%; padding: 12px; margin-top: 10px; background: transparent; border: 1px solid #00ff41; color: #00ff41; cursor: pointer; font-family: inherit; }
  .btn:hover { background: #00ff41; color: #000; }
  .filters { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+ .size-info { font-size: 0.8rem; opacity: 0.7; margin-top: 5px; }
 </style>
 </head>
 <body>
-<h1>> DINTHILANG PHOTO EDITOR v1.0</h1>
-
+<h1>> DINTHILANG PHOTO EDITOR v1.2</h1>
 <div class="container">
   <div>
     <canvas id="canvas"></canvas>
+    <p class="size-info" id="sizeInfo">> No image loaded</p>
   </div>
-
   <div class="controls">
-    <div class="control-group">
-      <label>> UPLOAD IMAGE</label>
-      <input type="file" id="upload" accept="image/*">
-    </div>
+    <div class="control-group"><label>> UPLOAD IMAGE</label><input type="file" id="upload" accept="image/*"></div>
 
     <div class="control-group">
-      <label>> BRIGHTNESS: <span id="bVal">100</span>%</label>
-      <input type="range" id="brightness" min="0" max="200" value="100">
+      <label>> MAKE BIGGER: <span id="scaleVal">1</span>x</label>
+      <input type="range" id="scale" min="1" max="4" step="0.5" value="1">
+      <p class="size-info">Upscales to 4x. Bigger = HD quality</p>
     </div>
 
-    <div class="control-group">
-      <label>> CONTRAST: <span id="cVal">100</span>%</label>
-      <input type="range" id="contrast" min="0" max="200" value="100">
-    </div>
-
-    <div class="control-group">
-      <label>> SATURATION: <span id="sVal">100</span>%</label>
-      <input type="range" id="saturation" min="0" max="200" value="100">
-    </div>
-
-    <div class="control-group">
-      <label>> BLUR: <span id="blVal">0</span>px</label>
-      <input type="range" id="blur" min="0" max="10" value="0">
-    </div>
+    <div class="control-group"><label>> BRIGHTNESS: <span id="bVal">100</span>%</label><input type="range" id="brightness" min="0" max="200" value="100"></div>
+    <div class="control-group"><label>> CONTRAST: <span id="cVal">100</span>%</label><input type="range" id="contrast" min="0" max="200" value="100"></div>
+    <div class="control-group"><label>> SATURATION: <span id="sVal">100</span>%</label><input type="range" id="saturation" min="0" max="200" value="100"></div>
+    <div class="control-group"><label>> BLUR: <span id="blVal">0</span>px</label><input type="range" id="blur" min="0" max="10" value="0"></div>
 
     <div class="control-group">
       <label>> QUICK FILTERS</label>
@@ -64,11 +50,11 @@
         <button class="btn" onclick="applyFilter('grayscale(100%)')">B&W</button>
         <button class="btn" onclick="applyFilter('sepia(100%)')">SEPIA</button>
         <button class="btn" onclick="applyFilter('invert(100%)')">INVERT</button>
-        <button class="btn" onclick="resetAll()">RESET</button>
+        <button class="btn" onclick="addWatermark()">WATERMARK</button>
       </div>
     </div>
-
-    <button class="btn" onclick="downloadImage()">[ DOWNLOAD IMAGE ]</button>
+    <button class="btn" onclick="resetAll()">RESET</button>
+    <button class="btn" onclick="downloadImage()">[ DOWNLOAD HD IMAGE ]</button>
   </div>
 </div>
 
@@ -76,43 +62,70 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 let img = new Image();
+let originalWidth = 0, originalHeight = 0;
+window.quickFilter = '';
 
 document.getElementById('upload').onchange = e => {
   const file = e.target.files[0];
   const reader = new FileReader();
-  reader.onload = () => {
-    img.src = reader.result;
-  }
+  reader.onload = () => { img.src = reader.result; }
   reader.readAsDataURL(file);
 }
 
 img.onload = () => {
-  canvas.width = img.width;
-  canvas.height = img.height;
+  originalWidth = img.width;
+  originalHeight = img.height;
   applyFilters();
+  updateSizeInfo();
 }
 
 function applyFilters() {
+  const scale = parseFloat(document.getElementById('scale').value);
   const b = document.getElementById('brightness').value;
   const c = document.getElementById('contrast').value;
   const s = document.getElementById('saturation').value;
   const bl = document.getElementById('blur').value;
 
+  document.getElementById('scaleVal').innerText = scale;
   document.getElementById('bVal').innerText = b;
   document.getElementById('cVal').innerText = c;
   document.getElementById('sVal').innerText = s;
   document.getElementById('blVal').innerText = bl;
 
-  ctx.filter = `brightness(${b}%) contrast(${c}%) saturate(${s}%) blur(${bl}px)`;
-  ctx.drawImage(img, 0, 0);
+  // Make canvas bigger
+  canvas.width = originalWidth * scale;
+  canvas.height = originalHeight * scale;
+
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high'; // Makes it look better when big
+
+  ctx.filter = `brightness(${b}%) contrast(${c}%) saturate(${s}%) blur(${bl}px) ${window.quickFilter}`;
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  updateSizeInfo();
+}
+
+function updateSizeInfo() {
+  if(originalWidth > 0) {
+    document.getElementById('sizeInfo').innerText =
+    `> Original: ${originalWidth}x${originalHeight}px | Output: ${canvas.width}x${canvas.height}px`;
+  }
 }
 
 function applyFilter(filter) {
-  ctx.filter = filter;
-  ctx.drawImage(img, 0, 0);
+  window.quickFilter = filter;
+  applyFilters();
+}
+
+function addWatermark() {
+  applyFilters();
+  ctx.font = "bold 40px Fira Code";
+  ctx.fillStyle = "rgba(0,255,65,0.4)";
+  ctx.fillText("DINTHILANG", 30, canvas.height - 30);
 }
 
 function resetAll() {
+  window.quickFilter = '';
+  document.getElementById('scale').value = 1;
   document.getElementById('brightness').value = 100;
   document.getElementById('contrast').value = 100;
   document.getElementById('saturation').value = 100;
@@ -122,13 +135,12 @@ function resetAll() {
 
 function downloadImage() {
   const link = document.createElement('a');
-  link.download = 'dinthilang-edited.png';
-  link.href = canvas.toDataURL();
+  link.download = `dinthilang-${canvas.width}x${canvas.height}.png`;
+  link.href = canvas.toDataURL('image/png', 1.0);
   link.click();
 }
 
-// Live updates
-['brightness','contrast','saturation','blur'].forEach(id => {
+['brightness','contrast','saturation','blur','scale'].forEach(id => {
   document.getElementById(id).oninput = applyFilters;
 })
 </script>
