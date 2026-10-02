@@ -1,186 +1,647 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-M3SR5CMZ');</script>
+  <!-- End Google Tag Manager -->
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VoxAgent AI — Standalone Voice AI Studio & Prank Engine</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Plus Jakarta Sans', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          },
-        }
-      }
-    }
-  </script>
+  <link rel="icon" type="image/svg+xml" href="/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <!-- Primary Meta Tags -->
+  <title>NEWBO OTT - Watch Movies Online Free</title>
+  <meta name="title" content="NEWBO OTT - Watch Movies Online Free">
+  <meta name="description" content="NEWBO is an OTT app for streaming movies, web series contents made and originating from North Eastern regions of India. Free unlimited access.">
+  <meta name="keywords" content="NEWBO, OTT platform, movie streaming, Indian movies, online movies, digital entertainment, free movies">
+  <meta name="author" content="NEWBO">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://newbo.in/">
+  <meta property="og:title" content="NEWBO OTT - Watch Movies Online Free">
+  <meta property="og:description" content="NEWBO is an OTT app for streaming movies, web series contents made and originating from North Eastern regions of India.">
+  <meta property="og:image" content="https://newbo.in/og-image.jpg">
+
+  <!-- Mobile App Meta -->
+  <meta name="apple-itunes-app" content="app-id=myAppStoreID">
+  <meta name="google-play-app" content="app-id=com.mars.newatch">
+  <meta name="theme-color" content="#0a1120">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
-    .gradient-text {
-      background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    :root {
+      --bg-dark: #0a1120;
+      --card-bg: #141d33;
+      --text-main: #ffffff;
+      --text-muted: #a0aec0;
+      --accent: #22c55e; /* Free access green badge */
+      --brand-red: #e50914;
+      --glass-btn: rgba(255, 255, 255, 0.22);
+      --modal-bg: #0f172a;
     }
-    .gradient-bg {
-      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #d946ef 100%);
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
-    .glass-card {
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      box-shadow: 0 0 40px rgba(0,0,0,0.9);
     }
-    .bar {
-      animation: sound 1.2s ease-in-out infinite alternate;
+
+    /* Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      background: linear-gradient(180deg, rgba(10, 17, 32, 0.95) 0%, rgba(10, 17, 32, 0) 100%);
+      backdrop-filter: blur(4px);
     }
-    @keyframes sound {
-      0% { height: 6px; opacity: 0.3; }
-      100% { height: 42px; opacity: 1; }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: -0.5px;
     }
-    .bar-paused {
-      animation-play-state: paused;
-      height: 6px;
-      opacity: 0.3;
+
+    .logo-icon {
+      width: 0;
+      height: 0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-left: 18px solid #ffffff;
+    }
+
+    .free-badge {
+      background: var(--accent);
+      color: #000;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+      text-transform: uppercase;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: #fff;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .badge {
+      position: absolute;
+      top: -4px;
+      right: -6px;
+      background: var(--brand-red);
+      color: white;
+      font-size: 10px;
+      border-radius: 50%;
+      padding: 1px 5px;
+      font-weight: bold;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      height: 72vh;
+      min-height: 480px;
+      background: linear-gradient(180deg, rgba(10, 17, 32, 0.1) 0%, rgba(10, 17, 32, 0.85) 75%, rgba(10, 17, 32, 1) 100%),
+                  url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80') center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 20px;
+    }
+
+    .hero-title {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+    }
+
+    .hero-description {
+      font-size: 13px;
+      color: #e2e8f0;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 16px;
+      opacity: 0.95;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background-color: #ffffff;
+      color: #000000;
+    }
+
+    .btn-secondary {
+      background-color: var(--glass-btn);
+      color: #ffffff;
+      backdrop-filter: blur(8px);
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    /* Horizontal Media Scroll */
+    .section {
+      padding: 16px 0 8px 16px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .media-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-right: 16px;
+      scrollbar-width: none;
+    }
+
+    .media-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .media-card {
+      flex: 0 0 135px;
+      height: 195px;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      background-color: var(--card-bg);
+      scroll-snap-align: start;
+      cursor: pointer;
+    }
+
+    .media-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .card-tag {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      background: rgba(34, 197, 94, 0.9);
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 800;
+      color: #000;
+    }
+
+    .card-title-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px 8px 8px;
+      background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+      font-size: 12px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    /* Progress Track Indicator */
+    .scroll-indicator {
+      width: 80px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.15);
+      margin: 12px auto 0;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .scroll-progress {
+      width: 35%;
+      height: 100%;
+      background: #ffffff;
+      border-radius: 2px;
+      transition: transform 0.1s ease-out;
+    }
+
+    /* Modals */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      height: 100%;
+      background: var(--modal-bg);
+      z-index: 200;
+      overflow-y: auto;
+      padding: 20px;
+      animation: slideUp 0.25s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translate(-50%, 100%); }
+      to { transform: translate(-50%, 0); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    /* Search Input */
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: var(--card-bg);
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .search-box input {
+      background: none;
+      border: none;
+      color: #fff;
+      width: 100%;
+      margin-left: 10px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .grid-results {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    /* Full-screen Embedded Video Player */
+    .player-modal {
+      padding: 0;
+      background: #000;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .video-container {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      background: #000;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Menu Drawer */
+    .menu-list {
+      list-style: none;
+    }
+
+    .menu-list li {
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .menu-list li i {
+      color: var(--text-muted);
+      width: 20px;
+    }
+
+    /* Bottom Nav Bar */
+    .bottom-tabs {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      background: rgba(10, 17, 32, 0.95);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      z-index: 90;
+    }
+
+    .tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      font-size: 11px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .tab-item.active {
+      color: #ffffff;
+    }
+
+    .tab-item i {
+      font-size: 18px;
+    }
+
+    .spacer {
+      height: 60px;
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 antialiased font-sans selection:bg-indigo-500 selection:text-white">
+<body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M3SR5CMZ" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
 
-  <!-- Navigation -->
-  <nav class="fixed top-0 left-0 w-full z-50 glass-card border-b border-slate-800">
-    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-      <a href="#" class="flex items-center gap-2.5 text-xl font-extrabold tracking-tight">
-        <span class="p-2.5 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-500/30">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-        </span>
-        VoxAgent<span class="text-indigo-400">.ai</span>
+  <div id="root">
+    <!-- Navbar Header -->
+    <header class="navbar">
+      <a href="#" class="logo">
+        <span class="logo-icon"></span>
+        Newbo
+        <span class="free-badge">UNLOCKED</span>
       </a>
-
-      <div class="hidden lg:flex items-center gap-7 text-sm font-semibold text-slate-300">
-        <a href="#call-studio" class="hover:text-indigo-400 transition">Voice Studio</a>
-        <a href="#prank-studio" class="hover:text-pink-400 transition text-pink-300 flex items-center gap-1">🎭 Prank Call Studio</a>
-        <a href="#outbound" class="hover:text-indigo-400 transition">Outbound Campaign</a>
-        <a href="#playground" class="hover:text-indigo-400 transition">Prompt Config</a>
+      <div class="nav-actions">
+        <button class="nav-btn" onclick="openModal('menuModal')"><i class="fa-solid fa-bars"></i></button>
+        <button class="nav-btn" onclick="openModal('searchModal')"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <button class="nav-btn" onclick="openModal('notifModal')">
+          <i class="fa-regular fa-bell"></i>
+          <span class="badge">2</span>
+        </button>
+        <button class="nav-btn" onclick="openModal('userModal')"><i class="fa-regular fa-user"></i></button>
       </div>
+    </header>
 
-      <div class="flex items-center gap-4">
-        <a href="#call-studio" class="px-5 py-2.5 rounded-full text-sm font-bold gradient-bg text-white hover:opacity-90 transition shadow-lg shadow-indigo-500/25">
-          Start Live Voice Call
-        </a>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Hero Section -->
-  <section class="pt-36 pb-20 px-6 max-w-7xl mx-auto text-center relative overflow-hidden">
-    <div class="absolute inset-0 -z-10 flex items-center justify-center">
-      <div class="w-[700px] h-[700px] bg-indigo-600/20 rounded-full blur-[120px]"></div>
-      <div class="w-[500px] h-[500px] bg-purple-600/15 rounded-full blur-[100px] -translate-y-20"></div>
-    </div>
-
-    <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs font-bold text-indigo-400 mb-8 shadow-inner">
-      <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-      100% In-Browser Interactive Voice AI
-    </span>
-
-    <h1 class="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight max-w-5xl mx-auto leading-[1.1] mb-6">
-      Human-Like Voice AI & <span class="gradient-text">Interactive Prank Calls</span>
-    </h1>
-
-    <p class="text-lg sm:text-xl text-slate-400 max-w-3xl mx-auto mb-10 font-normal leading-relaxed">
-      Speak directly with AI using your microphone or launch funny prank call simulations directly inside your browser.
-    </p>
-
-    <!-- LIVE BROWSER VOICE CALL STUDIO -->
-    <div id="call-studio" class="max-w-4xl mx-auto glass-card rounded-3xl p-6 sm:p-8 text-left shadow-2xl border border-slate-800">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-800/80 gap-4">
-        <div>
-          <h3 class="text-xl font-bold flex items-center gap-2">
-            <span id="call-indicator" class="w-3 h-3 rounded-full bg-slate-500"></span>
-            Browser Live Voice Call
-          </h3>
-          <p class="text-xs text-slate-400 mt-1">Talk through your microphone. The AI will hear you and speak back in real time.</p>
-        </div>
-
-        <div class="text-xs font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-800 px-3 py-1.5 rounded-lg">
-          Web Speech Engine: Ready
-        </div>
-      </div>
-
-      <div class="py-6 flex flex-col md:flex-row items-center gap-8">
-        <!-- Visualizer & Control -->
-        <div class="w-full md:w-1/2 flex flex-col items-center justify-center bg-slate-950/80 p-8 rounded-2xl border border-slate-800 text-center">
-          <div class="h-16 flex items-center gap-1.5 mb-6">
-            <div id="bar-1" class="bar bar-paused w-2 bg-indigo-500 rounded-full"></div>
-            <div id="bar-2" class="bar bar-paused w-2 bg-indigo-400 rounded-full"></div>
-            <div id="bar-3" class="bar bar-paused w-2 bg-purple-500 rounded-full"></div>
-            <div id="bar-4" class="bar bar-paused w-2 bg-pink-500 rounded-full"></div>
-            <div id="bar-5" class="bar bar-paused w-2 bg-indigo-500 rounded-full"></div>
-            <div id="bar-6" class="bar bar-paused w-2 bg-purple-400 rounded-full"></div>
-          </div>
-
-          <p id="call-status" class="text-sm font-medium text-slate-300 mb-6">Click button to start interactive call...</p>
-
-          <button id="web-call-btn" onclick="toggleBrowserCall()" class="w-full py-3.5 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold flex items-center justify-center gap-2 transition shadow-lg shadow-emerald-600/20">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
-            <span id="btn-text">Start Interactive Web Call</span>
+    <!-- Main Banner -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1 class="hero-title">HABILA Season 1</h1>
+        <p class="hero-description">
+          Habila runs away from home to avoid marrying another person. Swmdwn goes to look for her. Mebro goes wild as his wife runs away with someone else.
+        </p>
+        <div class="hero-buttons">
+          <button class="btn btn-primary" onclick="playVideo('HABILA Season 1')">
+            <i class="fa-solid fa-play"></i> Watch Free Now
+          </button>
+          <button class="btn btn-secondary" onclick="openDetails('HABILA Season 1', 'Habila runs away from home to avoid marrying another person. Swmdwn goes to look for her. Mebro goes wild as his wife runs away with someone else.', 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23')">
+            <i class="fa-solid fa-circle-info"></i> More Info
           </button>
         </div>
+      </div>
+    </section>
 
-        <!-- Transcript -->
-        <div class="w-full md:w-1/2 bg-slate-950/90 rounded-2xl p-4 border border-slate-800 h-64 flex flex-col">
-          <div class="flex items-center justify-between text-xs font-mono text-slate-500 uppercase mb-2">
-            <span>Live Conversation Transcript</span>
-            <button onclick="clearTranscript()" class="text-indigo-400 hover:underline lowercase text-[11px]">clear</button>
-          </div>
-          <div id="transcript-box" class="flex-1 overflow-y-auto space-y-3 pr-2 text-xs font-mono">
-            <div class="p-2.5 rounded-lg bg-indigo-950/50 border border-indigo-800/40 text-indigo-200">
-              <span class="font-bold text-indigo-400">AI Agent:</span> "Hello! Click 'Start Interactive Web Call' and talk to me!"
-            </div>
-          </div>
+    <!-- Trending Row -->
+    <section class="section">
+      <h2 class="section-title">Trending Movies & Series</h2>
+      <div class="media-scroll" id="trendingScroll">
+        <div class="media-card" onclick="playVideo('KHANGKHRAI')">
+          <span class="card-tag">FREE</span>
+          <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=300&q=80" alt="Khangkhrai">
+          <div class="card-title-overlay">KHANGKHRAI</div>
+        </div>
+        <div class="media-card" onclick="playVideo('Jangkhritia')">
+          <span class="card-tag">FREE</span>
+          <img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=300&q=80" alt="Jangkhritia">
+          <div class="card-title-overlay">Jangkhritia</div>
+        </div>
+        <div class="media-card" onclick="playVideo('Bekar')">
+          <span class="card-tag">FREE</span>
+          <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=300&q=80" alt="Bekar">
+          <div class="card-title-overlay">Bekar</div>
+        </div>
+        <div class="media-card" onclick="playVideo('Gwfar 2')">
+          <span class="card-tag">FREE</span>
+          <img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=300&q=80" alt="Gwfar">
+          <div class="card-title-overlay">Gwfar 2</div>
         </div>
       </div>
-    </div>
-  </section>
+      <div class="scroll-indicator"><div class="scroll-progress" id="trendingBar"></div></div>
+    </section>
 
-  <!-- AI PRANK CALL STUDIO -->
-  <section id="prank-studio" class="py-24 bg-gradient-to-b from-slate-950 via-pink-950/20 to-slate-950 border-y border-pink-900/30">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center max-w-3xl mx-auto mb-16">
-        <span class="px-3 py-1 bg-pink-500/10 border border-pink-500/30 text-pink-400 text-xs font-bold rounded-full uppercase tracking-widest">Entertainment Studio</span>
-        <h2 class="text-3xl sm:text-5xl font-black tracking-tight mt-4 mb-4">AI Prank Call Simulator 🎭</h2>
-        <p class="text-slate-400 text-sm sm:text-base">Select a scenario, type a target name, and launch a simulated live interactive AI prank call with automated audio speech.</p>
+    <!-- New Releases Row -->
+    <section class="section">
+      <h2 class="section-title">New Releases</h2>
+      <div class="media-scroll" id="newScroll">
+        <div class="media-card" onclick="playVideo('Onnai')">
+          <span class="card-tag">FREE</span>
+          <img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=300&q=80" alt="Onnai">
+          <div class="card-title-overlay">Onnai</div>
+        </div>
+        <div class="media-card" onclick="playVideo('Mwina')">
+          <span class="card-tag">FREE</span>
+          <img src="https://images.unsplash.com/photo-1518173946687-a4c8a383392e?auto=format&fit=crop&w=300&q=80" alt="Mwina">
+          <div class="card-title-overlay">Mwina</div>
+        </div>
+        <div class="media-card" onclick="playVideo('Jengshi')">
+          <span class="card-tag">FREE</span>
+          <img src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=300&q=80" alt="Jengshi">
+          <div class="card-title-overlay">Jengshi</div>
+        </div>
       </div>
+      <div class="scroll-indicator"><div class="scroll-progress" id="newBar"></div></div>
+    </section>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Scenario Selector -->
-        <div class="glass-card p-6 rounded-3xl border border-pink-900/40 space-y-4">
-          <h3 class="font-bold text-lg text-pink-300 flex items-center gap-2">
-            <span>🍕</span> Select Scenario
-          </h3>
+    <div class="spacer"></div>
 
-          <div class="space-y-3">
-            <div onclick="selectPrank('pizza')" id="prank-card-pizza" class="p-4 rounded-2xl bg-pink-950/30 border-2 border-pink-500 cursor-pointer transition">
-              <div class="flex justify-between items-center mb-1">
-                <span class="font-bold text-sm text-white">Confused Pizza Order</span>
-                <span class="text-xs bg-pink-500/20 text-pink-300 px-2 py-0.5 rounded">Popular</span>
-              </div>
-              <p class="text-xs text-slate-400">AI insists 15 extra-large pineapple pizzas are waiting downstairs.</p>
-            </div>
+    <!-- Bottom App Navigation Tabs -->
+    <nav class="bottom-tabs">
+      <a href="#" class="tab-item active">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </a>
+      <a href="#" class="tab-item" onclick="openModal('searchModal')">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <span>Search</span>
+      </a>
+      <a href="#" class="tab-item" onclick="openModal('menuModal')">
+        <i class="fa-solid fa-film"></i>
+        <span>Category</span>
+      </a>
+      <a href="#" class="tab-item" onclick="openModal('userModal')">
+        <i class="fa-solid fa-user"></i>
+        <span>Profile</span>
+      </a>
+    </nav>
+  </div>
 
-            <div onclick="selectPrank('landlord')" id="prank-card-landlord" class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-pink-800/50 cursor-pointer transition">
-              <div class="flex justify-between items-center mb-1">
-                <span class="font-bold text-sm text-white">Lottery Car Winner</span>
-              </div>
-              <p class="text-xs text-slate-400">AI claims they won a electric super car and needs delivery address.</p>
-            </div>
+  <!-- Search Modal Overlay -->
+  <div class="modal" id="searchModal">
+    <div class="modal-header">
+      <h3>Search Free Movies</h3>
+      <button class="close-btn" onclick="closeModal('searchModal')">&times;</button>
+    </div>
+    <div class="search-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="searchInput" placeholder="Search title..." onkeyup="filterSearch()">
+    </div>
+    <div class="grid-results" id="searchResults">
+      <div class="media-card" onclick="playVideo('HABILA Season 1')">
+        <span class="card-tag">FREE</span>
+        <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=300&q=80">
+        <div class="card-title-overlay">HABILA S1</div>
+      </div>
+      <div class="media-card" onclick="playVideo('KHANGKHRAI')">
+        <span class="card-tag">FREE</span>
+        <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=300&q=80">
+        <div class="card-title-overlay">KHANGKHRAI</div>
+      </div>
+      <div class="media-card" onclick="playVideo('Jangkhritia')">
+        <span class="card-tag">FREE</span>
+        <img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=300&q=80">
+        <div class="card-title-overlay">Jangkhritia</div>
+      </div>
+      <div class="media-card" onclick="playVideo('Bekar')">
+        <span class="card-tag">FREE</span>
+        <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=300&q=80">
+        <div class="card-title-overlay">Bekar</div>
+      </div>
+    </div>
+  </div>
 
-            <div onclick="selectPrank('gym')" id="prank-card-gym" class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-pink-800/50 cursor-pointer transition">
+  <!-- Menu Drawer Modal -->
+  <div class="modal" id="menuModal">
+    <div class="modal-header">
+      <h3>Menu</h3>
+      <button class="close-btn" onclick="closeModal('menuModal')">&times;</button>
+    </div>
+    <ul class="menu-list">
+      <li><i class="fa-solid fa-house"></i> Home</li>
+      <li><i class="fa-solid fa-film"></i> Movies (Unlocked)</li>
+      <li><i class="fa-solid fa-tv"></i> Web Series (Unlocked)</li>
+      <li><i class="fa-solid fa-fire"></i> Trending Releases</li>
+      <li><i class="fa-solid fa-download"></i> Downloads</li>
+      <li><i class="fa-solid fa-gear"></i> Settings</li>
+    </ul>
+  </div>
+
+  <!-- Notifications Modal -->
+  <div class="modal" id="notifModal">
+    <div class="modal-header">
+      <h3>Notifications</h3>
+      <button class="close-btn" onclick="closeModal('notifModal')">&times;</button>
+    </div>
+    <ul class="menu-list">
+      <li><i class="fa-solid fa-unlock" style="color:var(--accent);"></i> VIP Access Activated: All movies are free to watch!</li>
+      <li><i class="fa-solid fa-circle-play" style="color:var(--accent);"></i> New Episode: HABILA Ep 4 is available now.</li>
+    </ul>
+  </div>
+
+  <!-- User Profile Modal -->
+  <div class="modal" id="userModal">
+    <div class="modal-header">
+      <h3>User Profile</h3>
+      <button class="close-btn" onclick="closeModal('userModal')">&times;</button>
+    </div>
+    <div style="text-align: center; padding: 20px 0;">
+      <i class="fa-solid fa-circle-user" style="font-size: 60px; color: var(--accent);"></i>
+      <h4 style="margin-top: 10px;">Unlimited VIP Guest</h4>
+      <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Free Pass Active: Watch all Bodo & NE regional contents without any limits.</p>
+    </div>
+  </div>
+
+  <!-- Details Sheet Overlay -->
+  <div class="modal" id="detailsModal">
+    <div class="modal-header">
+      <span style="font-weight: 600; font-size: 13px; letter-spacing: 0.5px;">NEWBO ORIGINAL</span>
+      <button class="close-btn" onclick="closeModal('detailsModal')">&times;</button>
+    </div>
+    <img id="detailImg" src="" style="width: 100%; height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 16px;">
+    <h2 id="detailTitle" style="margin-bottom: 8px;"></h2>
+    <p id="detailDesc" style="font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px;"></p>
+    <button class="btn btn-primary" style="widthdiv onclick="selectPrank('gym')" id="prank-card-gym" class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-pink-800/50 cursor-pointer transition">
               <div class="flex justify-between items-center mb-1">
                 <span class="font-bold text-sm text-white">Strict Gym Coach</span>
               </div>
