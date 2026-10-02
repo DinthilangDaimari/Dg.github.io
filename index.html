@@ -3,10 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VoxAgent AI — Human-Like Voice AI Agents for Enterprise Phone Calls</title>
-  <!-- Tailwind CSS CDN -->
+  <title>VoxAgent AI — Standalone Voice AI Studio & Prank Engine</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -32,21 +30,22 @@
     .gradient-bg {
       background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #d946ef 100%);
     }
-    .glow {
-      box-shadow: 0 0 60px -15px rgba(99, 102, 241, 0.4);
-    }
     .glass-card {
       background: rgba(15, 23, 42, 0.75);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
-    /* Audio Visualizer Bars Animation */
     .bar {
       animation: sound 1.2s ease-in-out infinite alternate;
     }
     @keyframes sound {
       0% { height: 6px; opacity: 0.3; }
       100% { height: 42px; opacity: 1; }
+    }
+    .bar-paused {
+      animation-play-state: paused;
+      height: 6px;
+      opacity: 0.3;
     }
   </style>
 </head>
@@ -62,18 +61,16 @@
         VoxAgent<span class="text-indigo-400">.ai</span>
       </a>
 
-      <div class="hidden lg:flex items-center gap-8 text-sm font-semibold text-slate-300">
-        <a href="#features" class="hover:text-indigo-400 transition">Features</a>
-        <a href="#playground" class="hover:text-indigo-400 transition">Agent Playground</a>
-        <a href="#integrations" class="hover:text-indigo-400 transition">Integrations</a>
-        <a href="#roi-calculator" class="hover:text-indigo-400 transition">ROI Calculator</a>
-        <a href="#pricing" class="hover:text-indigo-400 transition">Pricing</a>
-        <a href="#faq" class="hover:text-indigo-400 transition">FAQ</a>
+      <div class="hidden lg:flex items-center gap-7 text-sm font-semibold text-slate-300">
+        <a href="#call-studio" class="hover:text-indigo-400 transition">Voice Studio</a>
+        <a href="#prank-studio" class="hover:text-pink-400 transition text-pink-300 flex items-center gap-1">🎭 Prank Call Studio</a>
+        <a href="#outbound" class="hover:text-indigo-400 transition">Outbound Campaign</a>
+        <a href="#playground" class="hover:text-indigo-400 transition">Prompt Config</a>
       </div>
 
       <div class="flex items-center gap-4">
-        <a href="#demo-section" class="px-5 py-2.5 rounded-full text-sm font-bold gradient-bg text-white hover:opacity-90 transition shadow-lg shadow-indigo-500/25">
-          Test Live Call
+        <a href="#call-studio" class="px-5 py-2.5 rounded-full text-sm font-bold gradient-bg text-white hover:opacity-90 transition shadow-lg shadow-indigo-500/25">
+          Start Live Voice Call
         </a>
       </div>
     </div>
@@ -88,519 +85,460 @@
 
     <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs font-bold text-indigo-400 mb-8 shadow-inner">
       <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-      Sub-600ms Real-Time Voice Intelligence Engine
+      100% In-Browser Interactive Voice AI
     </span>
 
     <h1 class="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight max-w-5xl mx-auto leading-[1.1] mb-6">
-      Human-Like AI Voice Agents That Turn <span class="gradient-text">Phone Calls</span> Into Revenue
+      Human-Like Voice AI & <span class="gradient-text">Interactive Prank Calls</span>
     </h1>
 
     <p class="text-lg sm:text-xl text-slate-400 max-w-3xl mx-auto mb-10 font-normal leading-relaxed">
-      Automate inbound customer service, outbound sales outreach, appointment bookings, and lead qualification with low-latency conversational AI agents.
+      Speak directly with AI using your microphone or launch funny prank call simulations directly inside your browser.
     </p>
 
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-      <a href="#demo-section" class="w-full sm:w-auto px-8 py-4 rounded-xl font-bold gradient-bg text-white hover:opacity-90 transition text-lg glow">
-        Launch Live Phone Demo
-      </a>
-      <a href="#playground" class="w-full sm:w-auto px-8 py-4 rounded-xl font-bold bg-slate-900 border border-slate-800 text-slate-200 hover:bg-slate-800 transition text-lg">
-        Try Prompt Playground
-      </a>
-    </div>
-
-    <!-- Live Call Simulation Console -->
-    <div id="demo-section" class="max-w-4xl mx-auto glass-card rounded-3xl p-6 sm:p-8 text-left shadow-2xl relative border border-slate-800">
+    <!-- LIVE BROWSER VOICE CALL STUDIO -->
+    <div id="call-studio" class="max-w-4xl mx-auto glass-card rounded-3xl p-6 sm:p-8 text-left shadow-2xl border border-slate-800">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-800/80 gap-4">
         <div>
           <h3 class="text-xl font-bold flex items-center gap-2">
-            <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
-            Interactive Voice Call Studio
+            <span id="call-indicator" class="w-3 h-3 rounded-full bg-slate-500"></span>
+            Browser Live Voice Call
           </h3>
-          <p class="text-xs text-slate-400 mt-1">Simulate web audio calls or dispatch an outbound test call directly to your phone.</p>
+          <p class="text-xs text-slate-400 mt-1">Talk through your microphone. The AI will hear you and speak back in real time.</p>
         </div>
 
-        <!-- Mode Toggle Tabs -->
-        <div class="flex bg-slate-900/80 p-1 rounded-xl border border-slate-800">
-          <button id="tab-web" onclick="switchDemoTab('web')" class="px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 transition">Browser Audio</button>
-          <button id="tab-phone" onclick="switchDemoTab('phone')" class="px-4 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition">Direct Phone Call</button>
+        <div class="text-xs font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-800 px-3 py-1.5 rounded-lg">
+          Web Speech Engine: Ready
         </div>
       </div>
 
-      <!-- Browser Audio Demo Panel -->
-      <div id="panel-web" class="py-6">
-        <div class="flex flex-col md:flex-row items-center gap-8">
-          <div class="w-full md:w-1/2 flex flex-col items-center justify-center bg-slate-950/80 p-8 rounded-2xl border border-slate-800 text-center">
-            
-            <!-- Dynamic Audio Spectrum -->
-            <div class="h-16 flex items-center gap-1.5 mb-6">
-              <div class="bar w-2 bg-indigo-500 rounded-full" style="animation-delay: 0.1s;"></div>
-              <div class="bar w-2 bg-indigo-400 rounded-full" style="animation-delay: 0.3s;"></div>
-              <div class="bar w-2 bg-purple-500 rounded-full" style="animation-delay: 0.2s;"></div>
-              <div class="bar w-2 bg-pink-500 rounded-full" style="animation-delay: 0.4s;"></div>
-              <div class="bar w-2 bg-indigo-500 rounded-full" style="animation-delay: 0.1s;"></div>
-              <div class="bar w-2 bg-purple-400 rounded-full" style="animation-delay: 0.3s;"></div>
-            </div>
-
-            <p id="call-status" class="text-sm font-medium text-slate-300 mb-6">Ready to connect web audio stream...</p>
-
-            <button id="web-call-btn" onclick="toggleWebCall()" class="w-full py-3.5 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold flex items-center justify-center gap-2 transition shadow-lg shadow-emerald-600/20">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
-              <span>Start Web Call Simulation</span>
-            </button>
+      <div class="py-6 flex flex-col md:flex-row items-center gap-8">
+        <!-- Visualizer & Control -->
+        <div class="w-full md:w-1/2 flex flex-col items-center justify-center bg-slate-950/80 p-8 rounded-2xl border border-slate-800 text-center">
+          <div class="h-16 flex items-center gap-1.5 mb-6">
+            <div id="bar-1" class="bar bar-paused w-2 bg-indigo-500 rounded-full"></div>
+            <div id="bar-2" class="bar bar-paused w-2 bg-indigo-400 rounded-full"></div>
+            <div id="bar-3" class="bar bar-paused w-2 bg-purple-500 rounded-full"></div>
+            <div id="bar-4" class="bar bar-paused w-2 bg-pink-500 rounded-full"></div>
+            <div id="bar-5" class="bar bar-paused w-2 bg-indigo-500 rounded-full"></div>
+            <div id="bar-6" class="bar bar-paused w-2 bg-purple-400 rounded-full"></div>
           </div>
 
-          <!-- Live Conversation Feed -->
-          <div class="w-full md:w-1/2 bg-slate-950/90 rounded-2xl p-4 border border-slate-800 h-64 flex flex-col">
-            <span class="text-xs font-mono text-slate-500 uppercase tracking-wider mb-2 font-semibold flex items-center justify-between">
-              <span>Live Speech Transcript</span>
-              <span id="latency-indicator" class="text-emerald-400">Latency: -- ms</span>
-            </span>
-            <div id="transcript-box" class="flex-1 overflow-y-auto space-y-3 pr-2 text-xs font-mono">
-              <div class="p-2.5 rounded-lg bg-indigo-950/50 border border-indigo-800/40 text-indigo-200">
-                <span class="font-bold text-indigo-400">AI Agent:</span> "Hello! Welcome to VoxAgent AI. How can I assist with your customer scheduling today?"
+          <p id="call-status" class="text-sm font-medium text-slate-300 mb-6">Click button to start interactive call...</p>
+
+          <button id="web-call-btn" onclick="toggleBrowserCall()" class="w-full py-3.5 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold flex items-center justify-center gap-2 transition shadow-lg shadow-emerald-600/20">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+            <span id="btn-text">Start Interactive Web Call</span>
+          </button>
+        </div>
+
+        <!-- Transcript -->
+        <div class="w-full md:w-1/2 bg-slate-950/90 rounded-2xl p-4 border border-slate-800 h-64 flex flex-col">
+          <div class="flex items-center justify-between text-xs font-mono text-slate-500 uppercase mb-2">
+            <span>Live Conversation Transcript</span>
+            <button onclick="clearTranscript()" class="text-indigo-400 hover:underline lowercase text-[11px]">clear</button>
+          </div>
+          <div id="transcript-box" class="flex-1 overflow-y-auto space-y-3 pr-2 text-xs font-mono">
+            <div class="p-2.5 rounded-lg bg-indigo-950/50 border border-indigo-800/40 text-indigo-200">
+              <span class="font-bold text-indigo-400">AI Agent:</span> "Hello! Click 'Start Interactive Web Call' and talk to me!"
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI PRANK CALL STUDIO -->
+  <section id="prank-studio" class="py-24 bg-gradient-to-b from-slate-950 via-pink-950/20 to-slate-950 border-y border-pink-900/30">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="px-3 py-1 bg-pink-500/10 border border-pink-500/30 text-pink-400 text-xs font-bold rounded-full uppercase tracking-widest">Entertainment Studio</span>
+        <h2 class="text-3xl sm:text-5xl font-black tracking-tight mt-4 mb-4">AI Prank Call Simulator 🎭</h2>
+        <p class="text-slate-400 text-sm sm:text-base">Select a scenario, type a target name, and launch a simulated live interactive AI prank call with automated audio speech.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Scenario Selector -->
+        <div class="glass-card p-6 rounded-3xl border border-pink-900/40 space-y-4">
+          <h3 class="font-bold text-lg text-pink-300 flex items-center gap-2">
+            <span>🍕</span> Select Scenario
+          </h3>
+
+          <div class="space-y-3">
+            <div onclick="selectPrank('pizza')" id="prank-card-pizza" class="p-4 rounded-2xl bg-pink-950/30 border-2 border-pink-500 cursor-pointer transition">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-bold text-sm text-white">Confused Pizza Order</span>
+                <span class="text-xs bg-pink-500/20 text-pink-300 px-2 py-0.5 rounded">Popular</span>
+              </div>
+              <p class="text-xs text-slate-400">AI insists 15 extra-large pineapple pizzas are waiting downstairs.</p>
+            </div>
+
+            <div onclick="selectPrank('landlord')" id="prank-card-landlord" class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-pink-800/50 cursor-pointer transition">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-bold text-sm text-white">Lottery Car Winner</span>
+              </div>
+              <p class="text-xs text-slate-400">AI claims they won a electric super car and needs delivery address.</p>
+            </div>
+
+            <div onclick="selectPrank('gym')" id="prank-card-gym" class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-pink-800/50 cursor-pointer transition">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-bold text-sm text-white">Strict Gym Coach</span>
+              </div>
+              <p class="text-xs text-slate-400">AI demands why they missed 5 AM morning workout session today.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prank Form -->
+        <div class="glass-card p-6 rounded-3xl border border-pink-900/40 space-y-5 flex flex-col justify-between">
+          <div>
+            <h3 class="font-bold text-lg text-white mb-2 flex items-center gap-2">
+              <span>📲</span> Dispatch Prank Call
+            </h3>
+            <p class="text-xs text-slate-400 mb-4">Simulate call execution with audio speech output.</p>
+
+            <form onsubmit="triggerPrank(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-300 mb-1">Friend / Target Name</label>
+                <input type="text" id="prank-name" value="Alex" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white">
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-300 mb-1">Target Phone Number</label>
+                <input type="tel" id="prank-phone" value="+1 (555) 234-5678" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs font-mono text-white">
+              </div>
+
+              <button type="submit" class="w-full py-3.5 rounded-xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-white text-xs hover:opacity-90 transition shadow-lg shadow-pink-600/20">
+                Launch Audio Prank Call Simulation
+              </button>
+            </form>
+          </div>
+
+          <p id="prank-status-text" class="text-xs text-center font-mono text-slate-500 mt-2">Status: Waiting...</p>
+        </div>
+
+        <!-- Prank Audio & Log Feed -->
+        <div class="glass-card p-6 rounded-3xl border border-pink-900/40 flex flex-col justify-between">
+          <div>
+            <h3 class="font-bold text-lg text-white mb-4 flex items-center gap-2">
+              <span>🎧</span> Prank Call Audio Log
+            </h3>
+            <div id="prank-feed" class="bg-slate-950 p-4 rounded-2xl border border-slate-800 h-64 overflow-y-auto font-mono text-xs space-y-3">
+              <div class="text-slate-500 italic text-[11px]">[System]: Select scenario and click launch to simulate audio call...</div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400">
+            <span>Automated Reveal SMS:</span>
+            <span class="text-emerald-400 font-bold">SIMULATED ✓</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUTBOUND CAMPAIGN SECTION -->
+  <section id="outbound" class="py-24 max-w-7xl mx-auto px-6">
+    <div class="glass-card p-8 md:p-12 rounded-3xl border border-slate-800">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="px-3 py-1 bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-bold rounded-full uppercase tracking-widest">Enterprise Outreach</span>
+        <h2 class="text-3xl font-extrabold tracking-tight mt-3 mb-3">Outbound High-Volume Campaigns</h2>
+        <p class="text-slate-400 text-sm">Automate customer outreach and manage batch call queues.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800">
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-xs font-bold text-slate-400 uppercase">Active Campaign</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">RUNNING</span>
+          </div>
+          <h4 class="font-bold text-lg text-white mb-1">Appointment Reminders</h4>
+          <p class="text-xs text-slate-500 mb-6">Targeting 500 contacts • 10 Active Streams</p>
+
+          <div class="space-y-4 font-mono text-xs">
+            <div>
+              <div class="flex justify-between mb-1">
+                <span class="text-slate-400">Progress</span>
+                <span class="text-indigo-400 font-bold">342 / 500 calls</span>
+              </div>
+              <div class="w-full h-2 bg-slate-900 rounded-full overflow-hidden">
+                <div class="h-full bg-indigo-600 rounded-full" style="width: 68%;"></div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 pt-2">
+              <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+                <span class="text-[10px] text-slate-500 block">Confirmed</span>
+                <span class="text-lg font-bold text-emerald-400">182</span>
+              </div>
+              <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+                <span class="text-[10px] text-slate-500 block">Avg Call Time</span>
+                <span class="text-lg font-bold text-purple-400">1.8m</span>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Direct Outbound Phone Call Panel -->
-      <div id="panel-phone" class="py-6 hidden">
-        <form onsubmit="handlePhoneSubmit(event)" class="max-w-md mx-auto bg-slate-950/80 p-6 rounded-2xl border border-slate-800">
-          <label class="block text-xs font-bold text-slate-300 uppercase mb-2">Enter Your Phone Number</label>
-          <div class="flex gap-2 mb-4">
-            <input type="tel" id="phone-input" placeholder="+1 (555) 000-0000" required class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white font-mono">
-            <button type="submit" class="px-5 py-3 bg-indigo-600 hover:bg-indigo-500 font-bold rounded-xl text-sm text-white transition">Call Me Now</button>
-          </div>
-          <p id="phone-status-msg" class="text-xs text-slate-400 text-center">Our AI agent will dial your phone number instantly for a 1-minute test call.</p>
-        </form>
-      </div>
-    </div>
-  </section>
-
-  <!-- Interactive Agent Persona Playground -->
-  <section id="playground" class="py-24 bg-slate-900/40 border-y border-slate-800/80">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center max-w-2xl mx-auto mb-16">
-        <h2 class="text-3xl font-extrabold tracking-tight mb-4">Agent Prompt & Personality Studio</h2>
-        <p class="text-slate-400">Customize system instructions, select natural voice profiles, and test knowledge base responses in real-time.</p>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Persona Configurator -->
-        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-5">
-          <h3 class="text-lg font-bold text-white flex items-center gap-2">
-            <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
-            Agent Persona Settings
-          </h3>
-
+        <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
           <div>
-            <label class="block text-xs font-semibold text-slate-400 mb-1">Use Case Template</label>
-            <select id="preset-select" onchange="loadPreset()" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-sm text-slate-200">
-              <option value="receptionist">Medical / Dental Appointment Booker</option>
-              <option value="sales">Real Estate Outbound Lead Qualifier</option>
-              <option value="support">E-Commerce Returns & Order Tracker</option>
-            </select>
+            <h4 class="font-bold text-lg text-white mb-2">Compliance Controls</h4>
+            <p class="text-xs text-slate-400 mb-4">Built-in safeguards for telecommunication standards.</p>
+            <ul class="space-y-2 text-xs text-slate-300">
+              <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> Automatic DNC List Scrubbing</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> Local Time Calling Window (8AM - 8PM)</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> Instant Opt-Out Suppression</li>
+            </ul>
           </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-slate-400 mb-1">Voice Profile (Neural TTS)</label>
-            <select class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-sm text-slate-200">
-              <option>Sarah (Friendly US English — Warm)</option>
-              <option>Marcus (Professional US English — Deep)</option>
-              <option>Emma (British English — Expressive)</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-slate-400 mb-1">System Instructions / Prompt</label>
-            <textarea id="prompt-textarea" rows="5" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs font-mono text-slate-300 focus:outline-none focus:border-indigo-500">You are a medical receptionist for Apex Dental. Your goal is to collect the caller's name, requested date, and book an appointment in Google Calendar using the check_availability tool.</textarea>
-          </div>
-        </div>
-
-        <!-- Knowledge Base & Tool Calling Config -->
-        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-5">
-          <h3 class="text-lg font-bold text-white flex items-center gap-2">
-            <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-            Knowledge Base & API Tools
-          </h3>
-
-          <div>
-            <label class="block text-xs font-semibold text-slate-400 mb-2">Upload Context / FAQs (PDF/Text)</label>
-            <div class="border-2 border-dashed border-slate-800 rounded-xl p-4 text-center hover:border-indigo-500/50 transition cursor-pointer bg-slate-950/50">
-              <svg class="w-8 h-8 text-slate-500 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 0115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-              <p class="text-xs text-slate-400">Drag & drop pricing sheets, FAQs, or scripts</p>
-              <span class="text-[10px] text-slate-500">Supports PDF, TXT, CSV up to 10MB</span>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-slate-400 mb-2">Enabled Function Calling Tools</label>
-            <div class="space-y-2">
-              <label class="flex items-center gap-2 text-xs text-slate-300 bg-slate-900 p-2.5 rounded-lg border border-slate-800">
-                <input type="checkbox" checked class="rounded border-slate-700 text-indigo-600 focus:ring-0">
-                <code class="text-indigo-400">check_calendar_slots()</code>
-              </label>
-              <label class="flex items-center gap-2 text-xs text-slate-300 bg-slate-900 p-2.5 rounded-lg border border-slate-800">
-                <input type="checkbox" checked class="rounded border-slate-700 text-indigo-600 focus:ring-0">
-                <code class="text-indigo-400">send_confirmation_sms()</code>
-              </label>
-              <label class="flex items-center gap-2 text-xs text-slate-300 bg-slate-900 p-2.5 rounded-lg border border-slate-800">
-                <input type="checkbox" checked class="rounded border-slate-700 text-indigo-600 focus:ring-0">
-                <code class="text-indigo-400">transfer_to_human_agent()</code>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <!-- Simulated Response Output -->
-        <div class="glass-card p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
-          <div>
-            <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              Live Testing Preview
-            </h3>
-            <p class="text-xs text-slate-400 mb-4">Simulated agent execution flow when receiving an inbound call:</p>
-
-            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs font-mono space-y-3 text-slate-300">
-              <div class="text-emerald-400">► [STT Pipeline] Audio converted to text in 110ms</div>
-              <div class="text-indigo-300">► [LLM Agent] Reasoning & trigger: <br><span class="text-slate-400">executing tool `check_calendar_slots(date="2026-10-05")`</span></div>
-              <div class="text-purple-400">► [TTS Pipeline] Streaming neural voice chunk (340ms)</div>
-            </div>
-          </div>
-
-          <button onclick="alert('Settings updated in test environment!')" class="w-full mt-6 py-3 bg-indigo-600 hover:bg-indigo-500 font-bold rounded-xl text-xs text-white transition">
-            Save & Update Test Agent
+          <button onclick="alert('Campaign batch started in demo mode!')" class="w-full mt-6 py-3 bg-indigo-600 hover:bg-indigo-500 font-bold rounded-xl text-xs text-white transition">
+            Launch Outbound Batch
           </button>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- Key Features Grid -->
-  <section id="features" class="py-24 max-w-7xl mx-auto px-6">
-    <div class="text-center max-w-2xl mx-auto mb-16">
-      <h2 class="text-3xl font-extrabold tracking-tight mb-4">Enterprise Phone AI Features</h2>
-      <p class="text-slate-400">Engineered specifically for low-latency voice streams, call-center level reliability, and strict workflow control.</p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <div class="glass-card p-8 rounded-2xl hover:border-slate-700 transition">
-        <div class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-6">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-        </div>
-        <h3 class="text-xl font-bold mb-3">Sub-600ms Latency</h3>
-        <p class="text-slate-400 text-sm leading-relaxed">Direct WebSocket streaming between Speech-to-Text, LLM, and Text-to-Speech ensures dynamic conversation speed.</p>
-      </div>
-
-      <div class="glass-card p-8 rounded-2xl hover:border-slate-700 transition">
-        <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center mb-6">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-        </div>
-        <h3 class="text-xl font-bold mb-3">Live Calendar & CRM Booking</h3>
-        <p class="text-slate-400 text-sm leading-relaxed">Agents run mid-call JSON function triggers to verify availability, write records to CRMs, and dispatch SMS text confirmations.</p>
-      </div>
-
-      <div class="glass-card p-8 rounded-2xl hover:border-slate-700 transition">
-        <div class="w-12 h-12 rounded-xl bg-pink-500/10 text-pink-400 flex items-center justify-center mb-6">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
-        </div>
-        <h3 class="text-xl font-bold mb-3">Smart Interruption Handling</h3>
-        <p class="text-slate-400 text-sm leading-relaxed">Callers can cut off the AI mid-sentence. The agent immediately stops talking and adjusts its context naturally.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Integrations Section -->
-  <section id="integrations" class="py-20 bg-slate-900/50 border-y border-slate-800/80">
-    <div class="max-w-7xl mx-auto px-6 text-center">
-      <h2 class="text-3xl font-extrabold tracking-tight mb-4">Connects With Your Entire Stack</h2>
-      <p class="text-slate-400 max-w-xl mx-auto mb-12">Plug VoxAgent directly into your existing telephony numbers, scheduling tools, and data pipelines.</p>
-
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-        <div class="glass-card p-6 rounded-2xl flex flex-col items-center justify-center border border-slate-800">
-          <span class="font-bold text-lg text-slate-200">Twilio</span>
-          <span class="text-[10px] text-slate-500 mt-1">Telephony</span>
-        </div>
-        <div class="glass-card p-6 rounded-2xl flex flex-col items-center justify-center border border-slate-800">
-          <span class="font-bold text-lg text-slate-200">Cal.com</span>
-          <span class="text-[10px] text-slate-500 mt-1">Scheduling</span>
-        </div>
-        <div class="glass-card p-6 rounded-2xl flex flex-col items-center justify-center border border-slate-800">
-          <span class="font-bold text-lg text-slate-200">HubSpot</span>
-          <span class="text-[10px] text-slate-500 mt-1">CRM</span>
-        </div>
-        <div class="glass-card p-6 rounded-2xl flex flex-col items-center justify-center border border-slate-800">
-          <span class="font-bold text-lg text-slate-200">Zapier</span>
-          <span class="text-[10px] text-slate-500 mt-1">Automation</span>
-        </div>
-        <div class="glass-card p-6 rounded-2xl flex flex-col items-center justify-center border border-slate-800">
-          <span class="font-bold text-lg text-slate-200">Webhooks</span>
-          <span class="text-[10px] text-slate-500 mt-1">REST API</span>
-        </div>
-        <div class="glass-card p-6 rounded-2xl flex flex-col items-center justify-center border border-slate-800">
-          <span class="font-bold text-lg text-slate-200">Stripe</span>
-          <span class="text-[10px] text-slate-500 mt-1">Payments</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Interactive Call Center Cost & ROI Calculator -->
-  <section id="roi-calculator" class="py-24 max-w-7xl mx-auto px-6">
-    <div class="glass-card p-8 md:p-12 rounded-3xl border border-slate-800">
-      <div class="text-center max-w-2xl mx-auto mb-12">
-        <h2 class="text-3xl font-extrabold tracking-tight mb-3">Calculate Your ROI & Call Savings</h2>
-        <p class="text-slate-400">See how much you save by deploying AI phone agents alongside or in place of human call centers.</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        <!-- Interactive Controls -->
-        <div class="space-y-6">
-          <div>
-            <div class="flex justify-between text-sm font-semibold mb-2">
-              <span class="text-slate-300">Monthly Call Volume</span>
-              <span id="calc-volume-text" class="text-indigo-400 font-mono font-bold">2,500 calls</span>
+        <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800">
+          <h4 class="font-bold text-lg text-white mb-2">Call Sentiment Analysis</h4>
+          <p class="text-xs text-slate-400 mb-4">Real-time caller mood classification.</p>
+          <div class="space-y-3 font-mono text-xs">
+            <div class="p-3 rounded-xl bg-emerald-950/30 border border-emerald-800/40">
+              <div class="flex justify-between font-bold text-emerald-400 mb-1">
+                <span>Interested</span>
+                <span>55%</span>
+              </div>
+              <p class="text-[11px] text-slate-400">Confirmed appointment / request info.</p>
             </div>
-            <input type="range" id="calc-volume" min="500" max="20000" step="500" value="2500" oninput="calculateROI()" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
-          </div>
-
-          <div>
-            <div class="flex justify-between text-sm font-semibold mb-2">
-              <span class="text-slate-300">Average Duration Per Call</span>
-              <span id="calc-duration-text" class="text-indigo-400 font-mono font-bold">4 minutes</span>
+            <div class="p-3 rounded-xl bg-indigo-950/30 border border-indigo-800/40">
+              <div class="flex justify-between font-bold text-indigo-300 mb-1">
+                <span>Rescheduled</span>
+                <span>30%</span>
+              </div>
+              <p class="text-[11px] text-slate-400">Requested alternate date.</p>
             </div>
-            <input type="range" id="calc-duration" min="1" max="15" step="1" value="4" oninput="calculateROI()" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
           </div>
         </div>
-
-        <!-- ROI Output Card -->
-        <div class="bg-slate-950 p-8 rounded-2xl border border-slate-800 text-center">
-          <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Estimated Monthly Savings</span>
-          <div id="calc-savings" class="text-4xl sm:text-5xl font-black gradient-text my-4 font-mono">$5,400 / mo</div>
-          <p id="calc-breakdown" class="text-xs text-slate-400">Based on standard human call center rate (~$0.60/min) vs. VoxAgent AI (~$0.09/min).</p>
-        </div>
       </div>
     </div>
   </section>
 
-  <!-- Pricing Section -->
-  <section id="pricing" class="py-24 bg-slate-900/40 border-t border-slate-800">
+  <!-- PROMPT STUDIO -->
+  <section id="playground" class="py-24 bg-slate-900/40 border-t border-slate-800">
     <div class="max-w-7xl mx-auto px-6">
       <div class="text-center max-w-2xl mx-auto mb-16">
-        <h2 class="text-3xl font-extrabold tracking-tight mb-4">Transparent Pricing</h2>
-        <p class="text-slate-400">Simple pay-as-you-go per minute pricing with no hidden developer fees.</p>
+        <h2 class="text-3xl font-extrabold tracking-tight mb-4">System Prompt & Personality Studio</h2>
+        <p class="text-slate-400">Customize the system instructions used by the interactive browser voice agent.</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Starter Tier -->
-        <div class="glass-card p-8 rounded-3xl border border-slate-800 flex flex-col justify-between">
-          <div>
-            <h3 class="text-lg font-bold text-white mb-2">Starter Test Tier</h3>
-            <p class="text-xs text-slate-400 mb-6">Perfect for testing workflows and developers.</p>
-            <div class="text-4xl font-black mb-6">$0 <span class="text-xs font-normal text-slate-500">/ initial sign up</span></div>
-            <ul class="space-y-3 text-xs text-slate-300 mb-8">
-              <li class="flex items-center gap-2">✓ Includes $10 free call credits (~100 mins)</li>
-              <li class="flex items-center gap-2">✓ 1 Phone number included</li>
-              <li class="flex items-center gap-2">✓ Web audio testing playground</li>
-              <li class="flex items-center gap-2">✓ Standard neural voices</li>
-            </ul>
-          </div>
-          <a href="#demo-section" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-center font-bold rounded-xl text-xs text-white border border-slate-800 transition">Start Free</a>
+      <div class="max-w-2xl mx-auto glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">System Instructions / Prompt</label>
+          <textarea id="system-prompt" rows="4" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs font-mono text-slate-300 focus:outline-none focus:border-indigo-500">You are VoxAgent, a helpful AI phone assistant. Keep answers short, natural, and limited to 1 or 2 sentences.</textarea>
         </div>
-
-        <!-- Pro Tier -->
-        <div class="glass-card p-8 rounded-3xl border-2 border-indigo-500 relative flex flex-col justify-between shadow-2xl">
-          <span class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-indigo-600 text-white font-bold text-[10px] uppercase tracking-wider px-3 py-1 rounded-full">Most Popular</span>
-          <div>
-            <h3 class="text-lg font-bold text-white mb-2">Pro Growth</h3>
-            <p class="text-xs text-slate-400 mb-6">For businesses replacing inbound receptionist calls.</p>
-            <div class="text-4xl font-black mb-6">$49 <span class="text-xs font-normal text-slate-500">/ mo + $0.09/min</span></div>
-            <ul class="space-y-3 text-xs text-slate-300 mb-8">
-              <li class="flex items-center gap-2">✓ Up to 10 phone numbers</li>
-              <li class="flex items-center gap-2">✓ Ultra-low sub-600ms latency</li>
-              <li class="flex items-center gap-2">✓ Live Google Calendar & CRM webhooks</li>
-              <li class="flex items-center gap-2">✓ Custom voice cloning support</li>
-            </ul>
-          </div>
-          <a href="#demo-section" class="w-full py-3 gradient-bg text-center font-bold rounded-xl text-xs text-white transition shadow-lg shadow-indigo-500/25">Get Started</a>
-        </div>
-
-        <!-- Enterprise Tier -->
-        <div class="glass-card p-8 rounded-3xl border border-slate-800 flex flex-col justify-between">
-          <div>
-            <h3 class="text-lg font-bold text-white mb-2">Enterprise Dedicated</h3>
-            <p class="text-xs text-slate-400 mb-6">For high-volume call centers and custom SIP trunks.</p>
-            <div class="text-4xl font-black mb-6">Custom</div>
-            <ul class="space-y-3 text-xs text-slate-300 mb-8">
-              <li class="flex items-center gap-2">✓ Unlimited concurrent call concurrency</li>
-              <li class="flex items-center gap-2">✓ Dedicated phone infrastructure / SIP trunks</li>
-              <li class="flex items-center gap-2">✓ HIPAA & SOC2 compliant deployment</li>
-              <li class="flex items-center gap-2">✓ Custom SLA & 24/7 priority support</li>
-            </ul>
-          </div>
-          <a href="#" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-center font-bold rounded-xl text-xs text-white border border-slate-800 transition">Contact Sales</a>
-        </div>
+        <button onclick="updateSystemPrompt()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 font-bold rounded-xl text-xs text-white transition">
+          Update Agent Instructions
+        </button>
       </div>
     </div>
   </section>
 
-  <!-- FAQ Accordion Section -->
-  <section id="faq" class="py-24 max-w-4xl mx-auto px-6">
-    <div class="text-center mb-16">
-      <h2 class="text-3xl font-extrabold tracking-tight mb-4">Frequently Asked Questions</h2>
-      <p class="text-slate-400">Everything you need to know about phone voice agents.</p>
-    </div>
-
-    <div class="space-y-4">
-      <details class="glass-card p-6 rounded-2xl border border-slate-800 cursor-pointer group">
-        <summary class="font-bold text-slate-200 list-none flex justify-between items-center">
-          <span>How fast is the speech response time (latency)?</span>
-          <span class="text-indigo-400 font-bold group-open:rotate-180 transition">↓</span>
-        </summary>
-        <p class="text-xs text-slate-400 mt-3 leading-relaxed">
-          VoxAgent operates at under 600ms total round-trip latency. By streaming WebSocket audio directly between Speech-to-Text, LLMs, and Text-to-Speech models, the AI responds as quickly as a human caller.
-        </p>
-      </details>
-
-      <details class="glass-card p-6 rounded-2xl border border-slate-800 cursor-pointer group">
-        <summary class="font-bold text-slate-200 list-none flex justify-between items-center">
-          <span>Can I port my existing business phone number?</span>
-          <span class="text-indigo-400 font-bold group-open:rotate-180 transition">↓</span>
-        </summary>
-        <p class="text-xs text-slate-400 mt-3 leading-relaxed">
-          Yes! You can port your existing number directly via Twilio or simply configure conditional call forwarding on your current landline or mobile provider to route unanswered calls to VoxAgent.
-        </p>
-      </details>
-
-      <details class="glass-card p-6 rounded-2xl border border-slate-800 cursor-pointer group">
-        <summary class="font-bold text-slate-200 list-none flex justify-between items-center">
-          <span>What happens if the caller asks to speak to a human?</span>
-          <span class="text-indigo-400 font-bold group-open:rotate-180 transition">↓</span>
-        </summary>
-        <p class="text-xs text-slate-400 mt-3 leading-relaxed">
-          The AI agent triggers a live call transfer function (`transfer_to_human`). It bridges the call to your specified office phone number while sending an instant transcript preview to your staff dashboard.
-        </p>
-      </details>
-    </div>
-  </section>
-
-  <!-- CTA Banner -->
-  <section class="py-20 px-6 max-w-5xl mx-auto text-center">
-    <div class="p-12 rounded-3xl gradient-bg text-white glow">
-      <h2 class="text-3xl sm:text-4xl font-black mb-4">Deploy Your First Voice Agent Today</h2>
-      <p class="text-indigo-100 max-w-xl mx-auto mb-8 text-sm">Start testing in your browser or phone with instant trial credits.</p>
-      <a href="#demo-section" class="px-8 py-4 rounded-xl font-bold bg-white text-slate-950 hover:bg-slate-100 transition shadow-xl inline-block">
-        Claim Free Trial
-      </a>
-    </div>
-  </section>
-
-  <!-- Footer -->
   <footer class="border-t border-slate-800 py-12 text-center text-slate-500 text-xs">
-    <p>© 2026 VoxAgent AI Inc. Built with HTML, Tailwind CSS & Real-time AI Audio Streaming.</p>
+    <p>© 2026 VoxAgent AI. Full In-Browser Native Voice App.</p>
   </footer>
 
-  <!-- JavaScript Controls -->
+  <!-- JAVASCRIPT: WEB SPEECH API CALL ENGINE -->
   <script>
-    // Tab switching in call demo
-    function switchDemoTab(tab) {
-      const webPanel = document.getElementById('panel-web');
-      const phonePanel = document.getElementById('panel-phone');
-      const webTab = document.getElementById('tab-web');
-      const phoneTab = document.getElementById('tab-phone');
+    // Speech Recognition & Speech Synthesis Web API Setup
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition = null;
+    let isCalling = false;
+    let systemInstruction = "You are VoxAgent, a helpful AI phone assistant. Keep answers short and natural.";
 
-      if (tab === 'web') {
-        webPanel.classList.remove('hidden');
-        phonePanel.classList.add('hidden');
-        webTab.className = "px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 transition";
-        phoneTab.className = "px-4 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition";
-      } else {
-        webPanel.classList.add('hidden');
-        phonePanel.classList.remove('hidden');
-        phoneTab.className = "px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 transition";
-        webTab.className = "px-4 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition";
-      }
+    if (SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+
+      recognition.onresult = (event) => {
+        const lastResultIndex = event.results.length - 1;
+        const transcript = event.results[lastResultIndex][0].transcript.trim();
+
+        if (transcript) {
+          addTranscript('You (Caller)', transcript, 'slate');
+          generateAIResponse(transcript);
+        }
+      };
+
+      recognition.onerror = (e) => {
+        console.error('Speech recognition error:', e.error);
+      };
+
+      recognition.onend = () => {
+        if (isCalling) {
+          recognition.start(); // Keep listening during call
+        }
+      };
     }
 
-    // Web Call Toggle Simulator
-    let isCalling = false;
-    function toggleWebCall() {
+    function toggleBrowserCall() {
       const btn = document.getElementById('web-call-btn');
+      const btnText = document.getElementById('btn-text');
       const status = document.getElementById('call-status');
-      const transcriptBox = document.getElementById('transcript-box');
-      const latency = document.getElementById('latency-indicator');
+      const indicator = document.getElementById('call-indicator');
+
+      if (!SpeechRecognition) {
+        alert("Speech Recognition is not supported on this browser. Please use Google Chrome or MS Edge.");
+        return;
+      }
 
       if (!isCalling) {
         isCalling = true;
         btn.className = "w-full py-3.5 px-6 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold flex items-center justify-center gap-2 transition shadow-lg shadow-red-600/20";
-        btn.innerHTML = `<span>End Active Call</span>`;
-        status.innerText = "Call connected! Speaking with Sarah (VoxAgent AI)...";
-        latency.innerText = "Latency: 480 ms";
+        btnText.innerText = "End Active Call";
+        status.innerText = "Listening... Speak into your microphone!";
+        indicator.className = "w-3 h-3 rounded-full bg-emerald-500 animate-pulse";
+        setBarsActive(true);
 
-        // Append simulated live dialogue
-        setTimeout(() => {
-          transcriptBox.innerHTML += `
-            <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300">
-              <span class="font-bold text-slate-100">You (Caller):</span> "Hi, do you have any appointments open for doctor consultation tomorrow afternoon?"
-            </div>`;
-          transcriptBox.scrollTop = transcriptBox.scrollHeight;
-        }, 1200);
+        try {
+          recognition.start();
+        } catch(e) {}
 
-        setTimeout(() => {
-          transcriptBox.innerHTML += `
-            <div class="p-2.5 rounded-lg bg-indigo-950/50 border border-indigo-800/40 text-indigo-200">
-              <span class="font-bold text-indigo-400">AI Agent:</span> "Let me check our live schedule. Yes! We have openings at 2:00 PM and 4:30 PM. Would either work for you?"
-            </div>`;
-          transcriptBox.scrollTop = transcriptBox.scrollHeight;
-        }, 2800);
+        speakText("Hello! I am VoxAgent AI. I am listening, how can I help you today?");
+        addTranscript('AI Agent', "Hello! I am VoxAgent AI. I am listening, how can I help you today?", 'indigo');
 
       } else {
         isCalling = false;
         btn.className = "w-full py-3.5 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold flex items-center justify-center gap-2 transition shadow-lg shadow-emerald-600/20";
-        btn.innerHTML = `<span>Start Web Call Simulation</span>`;
-        status.innerText = "Call ended. Ready to connect web audio stream...";
-        latency.innerText = "Latency: -- ms";
+        btnText.innerText = "Start Interactive Web Call";
+        status.innerText = "Call ended. Click button to restart.";
+        indicator.className = "w-3 h-3 rounded-full bg-slate-500";
+        setBarsActive(false);
+
+        window.speechSynthesis.cancel();
+        try {
+          recognition.stop();
+        } catch(e) {}
       }
     }
 
-    // Outbound Phone Submission Simulation
-    function handlePhoneSubmit(e) {
+    function speakText(text) {
+      window.speechSynthesis.cancel(); // Stop ongoing speech
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function generateAIResponse(userText) {
+      let reply = "I understand. How else can I assist you?";
+      const lower = userText.toLowerCase();
+
+      if (lower.includes('hello') || lower.includes('hi')) {
+        reply = "Hello there! It is great to speak with you directly today.";
+      } else if (lower.includes('name')) {
+        reply = "I am VoxAgent, your browser-native Voice AI assistant.";
+      } else if (lower.includes('price') || lower.includes('cost')) {
+        reply = "Our pricing starts with $10 free call credits, and then pay as you go per minute.";
+      } else if (lower.includes('appointment') || lower.includes('book')) {
+        reply = "I can schedule that appointment for you. What date and time works best?";
+      } else if (lower.includes('prank')) {
+        reply = "Check out our Prank Call Studio section right below this studio!";
+      } else if (lower.includes('bye') || lower.includes('stop')) {
+        reply = "Goodbye! Have a fantastic day.";
+        setTimeout(() => toggleBrowserCall(), 2000);
+      }
+
+      speakText(reply);
+      addTranscript('AI Agent', reply, 'indigo');
+    }
+
+    function addTranscript(speaker, text, color) {
+      const box = document.getElementById('transcript-box');
+      const bg = color === 'indigo' ? 'bg-indigo-950/50 border-indigo-800/40 text-indigo-200' : 'bg-slate-900 border-slate-800 text-slate-300';
+      const labelColor = color === 'indigo' ? 'text-indigo-400' : 'text-slate-100';
+
+      box.innerHTML += `
+        <div class="p-2.5 rounded-lg border ${bg}">
+          <span class="font-bold ${labelColor}">${speaker}:</span> "${text}"
+        </div>`;
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function clearTranscript() {
+      document.getElementById('transcript-box').innerHTML = '';
+    }
+
+    function setBarsActive(active) {
+      for (let i = 1; i <= 6; i++) {
+        const bar = document.getElementById(`bar-${i}`);
+        if (active) bar.classList.remove('bar-paused');
+        else bar.classList.add('bar-paused');
+      }
+    }
+
+    // PRANK CALL SIMULATOR
+    let activePrank = 'pizza';
+
+    function selectPrank(prank) {
+      activePrank = prank;
+      ['pizza', 'landlord', 'gym'].forEach(p => {
+        const card = document.getElementById(`prank-card-${p}`);
+        if (p === prank) card.className = "p-4 rounded-2xl bg-pink-950/30 border-2 border-pink-500 cursor-pointer transition";
+        else card.className = "p-4 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-pink-800/50 cursor-pointer transition";
+      });
+    }
+
+    function triggerPrank(e) {
       e.preventDefault();
-      const phone = document.getElementById('phone-input').value;
-      const msg = document.getElementById('phone-status-msg');
-      msg.className = "text-xs text-emerald-400 font-bold text-center";
-      msg.innerText = `Calling ${phone}... Please answer your mobile phone!`;
-    }
+      const name = document.getElementById('prank-name').value;
+      const status = document.getElementById('prank-status-text');
+      const feed = document.getElementById('prank-feed');
 
-    // Playground Preset Loader
-    function loadPreset() {
-      const select = document.getElementById('preset-select').value;
-      const textarea = document.getElementById('prompt-textarea');
+      status.className = "text-xs text-center font-mono text-pink-400 font-bold animate-pulse";
+      status.innerText = "Status: Dialing audio call...";
+      feed.innerHTML = `<div class="text-pink-400 font-bold">[Call Connect]: Initiating ${activePrank} scenario...</div>`;
 
-      if (select === 'receptionist') {
-        textarea.value = "You are a medical receptionist for Apex Dental. Collect the caller's name and preferred time, then invoke check_calendar_slots().";
-      } else if (select === 'sales') {
-        textarea.value = "You are an outbound sales lead qualifier for Prime Realty. Qualify buyer budget, preferred locations, and pre-approval status.";
-      } else if (select === 'support') {
-        textarea.value = "You are an automated e-commerce support assistant. Ask for the order ID and return status from the user database.";
+      let line1 = "", line2 = "", line3 = "";
+
+      if (activePrank === 'pizza') {
+        line1 = `Hello, is this ${name}? I'm downstairs with your 15 extra-large pineapple pizzas!`;
+        line2 = `Wait, I didn't order any pizza! You have the wrong number!`;
+        line3 = `No way ${name}, the order name says extra pineapple! You have to come pay now!`;
+      } else if (activePrank === 'landlord') {
+        line1 = `Congratulations ${name}! You won a brand new luxury electric sports car!`;
+        line2 = `Are you serious? Is this a joke?`;
+        line3 = `No joke ${name}! We just need delivery confirmation to drop it off today!`;
+      } else {
+        line1 = `Hey ${name}! Where are you? You missed your 5 AM burpee and treadmill workout!`;
+        line2 = `What? Who is this? I don't have a workout scheduled!`;
+        line3 = `No excuses ${name}! Get off the bed and do 50 pushups right now!`;
       }
+
+      setTimeout(() => {
+        feed.innerHTML += `<div class="text-indigo-300"><span class="font-bold">AI Agent:</span> "${line1}"</div>`;
+        speakText(line1);
+        feed.scrollTop = feed.scrollHeight;
+      }, 1500);
+
+      setTimeout(() => {
+        feed.innerHTML += `<div class="text-slate-400"><span class="text-emerald-400 font-bold">${name}:</span> "${line2}"</div>`;
+        feed.scrollTop = feed.scrollHeight;
+      }, 5500);
+
+      setTimeout(() => {
+        feed.innerHTML += `<div class="text-indigo-300"><span class="font-bold">AI Agent:</span> "${line3}"</div>`;
+        speakText(line3);
+        feed.scrollTop = feed.scrollHeight;
+      }, 9000);
+
+      setTimeout(() => {
+        feed.innerHTML += `<div class="text-pink-400 font-bold">[Call End]: Reveal SMS sent to target! 🎭</div>`;
+        status.className = "text-xs text-center font-mono text-emerald-400 font-bold";
+        status.innerText = "Status: Prank completed!";
+        feed.scrollTop = feed.scrollHeight;
+      }, 13500);
     }
 
-    // Interactive ROI Calculator Function
-    function calculateROI() {
-      const volume = parseInt(document.getElementById('calc-volume').value);
-      const duration = parseInt(document.getElementById('calc-duration').value);
-
-      document.getElementById('calc-volume-text').innerText = `${volume.toLocaleString()} calls`;
-      document.getElementById('calc-duration-text').innerText = `${duration} minutes`;
-
-      const totalMinutes = volume * duration;
-      const humanCost = totalMinutes * 0.60; // $0.60/min avg for human agent
-      const aiCost = totalMinutes * 0.09;   // $0.09/min for AI voice agent
-      const savings = Math.round(humanCost - aiCost);
-
-      document.getElementById('calc-savings').innerText = `$${savings.toLocaleString()} / mo`;
+    function updateSystemPrompt() {
+      systemInstruction = document.getElementById('system-prompt').value;
+      alert('System prompt updated!');
     }
   </script>
 </body>
